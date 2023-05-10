@@ -1,14 +1,14 @@
 //
-//  chess_gameApp.swift
-//  chess-game
+//  ChessGameApp.swift
+//  ChessGame
 //
-//  Created by Vít Nademlejnský on 09.05.2023.
+//  Created by Vít Nademlejnský on 10.05.2023.
 //
 
 import SwiftUI
 
 @main
-struct chess_gameApp: App {
+struct ChessGameApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
