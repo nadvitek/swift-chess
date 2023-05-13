@@ -10,7 +10,8 @@ import SwiftUI
 struct ButtonView: View {
     let cornerRadius: CGFloat
     let text: String
-    let size: CGFloat
+    let textSize: CGFloat
+    
 //    let action: () -> Void
     
     var body: some View {
@@ -18,17 +19,16 @@ struct ButtonView: View {
             //action()
         }) {
             Text(text)
-                .font(.custom("VarelaRound-Regular", size: size))
+                .font(.custom("VarelaRound-Regular", size: textSize))
                 .foregroundColor(Color("buttonTextColor"))
-                .padding()
-                .background(Color("buttonColor"))
-                .cornerRadius(cornerRadius)
-        }
+        }.frame(width: 100, height: 50)
+            .background(Color("buttonColor"))
+            .cornerRadius(cornerRadius)
     }
 }
 
 struct ButtonView_Previews: PreviewProvider {
     static var previews: some View {
-        ButtonView(cornerRadius: 30, text: "ButtonName", size: 25)
+        ButtonView(cornerRadius: 30, text: "ButtonName", textSize: 25)
     }
 }

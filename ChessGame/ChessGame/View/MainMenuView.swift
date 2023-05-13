@@ -15,12 +15,25 @@ struct MainMenuView: View {
                 .ignoresSafeArea()
                 .foregroundColor(Color("backgroundColor"))
             VStack {
-                ButtonView(cornerRadius: 30, text: "Single Player", size: 25)
-                ButtonView(cornerRadius: 30, text: "Multi Player", size: 25)
-                ButtonView(cornerRadius: 30, text: "Custom Board", size: 25)
+                HStack {
+                    Image(systemName: "questionmark.circle.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                    Spacer()
+                    Image(systemName: "person.crop.circle.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                }.padding()
+                    .offset(y: -300)
+                HStack {
+                    ButtonView(cornerRadius: 30, text: "Single Player", textSize: 18)
+                    ButtonView(cornerRadius: 30, text: "Multi Player", textSize: 18)
+                    ButtonView(cornerRadius: 30, text: "Custom Board", textSize: 18)
+                }
+                VStack {
+                    
+                }
             }
-            .padding()
-            .ignoresSafeArea()
         }
     }
 }
