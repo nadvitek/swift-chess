@@ -15,6 +15,7 @@
 		A36799C72A0BBA4C00F56B46 /* PieceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36799C62A0BBA4C00F56B46 /* PieceType.swift */; };
 		A36799C92A0BBB0000F56B46 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36799C82A0BBB0000F56B46 /* Tile.swift */; };
 		A36799CC2A0BBB2500F56B46 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36799CB2A0BBB2500F56B46 /* Piece.swift */; };
+		A38BDBD02A1BA9E200E62583 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38BDBCF2A1BA9E200E62583 /* BoardView.swift */; };
 		A3AF98382A0ED57000CE3FB2 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AF98372A0ED57000CE3FB2 /* SignInView.swift */; };
 		A3EFFF2E2A0EE672006487E2 /* VarelaRound-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3EFFF2D2A0EE672006487E2 /* VarelaRound-Regular.ttf */; };
 		A3EFFF322A0EEA42006487E2 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EFFF312A0EEA42006487E2 /* ButtonView.swift */; };
@@ -30,6 +31,7 @@
 		A36799C62A0BBA4C00F56B46 /* PieceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceType.swift; sourceTree = "<group>"; };
 		A36799C82A0BBB0000F56B46 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		A36799CB2A0BBB2500F56B46 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
+		A38BDBCF2A1BA9E200E62583 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		A3AF98372A0ED57000CE3FB2 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		A3EFFF2D2A0EE672006487E2 /* VarelaRound-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VarelaRound-Regular.ttf"; sourceTree = "<group>"; };
 		A3EFFF2F2A0EE824006487E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				A36799B72A0BB9AF00F56B46 /* MainMenuView.swift */,
 				A3AF98372A0ED57000CE3FB2 /* SignInView.swift */,
 				A3EFFF312A0EEA42006487E2 /* ButtonView.swift */,
+				A38BDBCF2A1BA9E200E62583 /* BoardView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 				A36799C52A0BBA3200F56B46 /* Alliance.swift in Sources */,
 				A36799CC2A0BBB2500F56B46 /* Piece.swift in Sources */,
 				A36799C92A0BBB0000F56B46 /* Tile.swift in Sources */,
+				A38BDBD02A1BA9E200E62583 /* BoardView.swift in Sources */,
 				A36799C72A0BBA4C00F56B46 /* PieceType.swift in Sources */,
 				A36799B62A0BB9AF00F56B46 /* ChessGameApp.swift in Sources */,
 			);
