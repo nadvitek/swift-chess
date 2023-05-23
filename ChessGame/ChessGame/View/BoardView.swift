@@ -22,7 +22,7 @@ struct BoardView: View {
                 
                 ForEach(0..<8, id: \.self) { x in
                     ForEach(0..<8, id: \.self) { y in
-                        TileView(x: x, y: y)
+                        TileView(tile: Tile(x: x, y: y))
                     }
                 }
                 
@@ -53,22 +53,41 @@ struct BoardView: View {
 }
 
 struct TileView: View {
-    let x: Int;
-    let y: Int;
+    @State private var tile: Tile
+    
+    init(tile: Tile) {
+        self.tile = tile
+        if (tile.y == 1) {
+            tile.piece = Piece(on: tile, being: .Pawn, ofColor: .White)
+        }
+        if (tile.y == 6) {
+            tile.piece = Piece(on: tile, being: .Pawn, ofColor: .Black)
+        }
+    }
     
     var body: some View {
         GeometryReader { geo in
             let size = geo.size.width * 0.099
-            let positionX = geo.size.width * 0.153 + size * Double(x)
-            let positionY = geo.size.height * 0.6794 - size * Double(y)
-            Button(action: {
+            let positionX = geo.size.width * 0.153 + size * Double(tile.x)
+            let positionY = geo.size.height * 0.6794 - size * Double(tile.y)
+            ZStack {
+                Button (action: {
+                    tile.piece = Piece(on: tile, being: .Queen, ofColor: .Black)
+                    print("a")
+                }) {
+                    Text(" a")
+                }
+                    .frame(width: size, height: size)
+                    .background((tile.x + tile.y) % 2 == 0 ? Color("darkTileColor") : Color("lightTileColor"))
                 
-            }){
-            }
-                .frame(width: size, height: size)
-                .background((x + y) % 2 == 0 ? Color("darkTileColor") : Color("lightTileColor"))
-                .position(x: positionX, y: positionY)
+                if let tilePiece = tile.piece {
+                    Image(tilePiece.pieceImageName())
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: size * 1.3, height: size * 1.3, alignment: .center)
+                }
                 
+            }.position(x: positionX, y: positionY)
         }
     }
 }

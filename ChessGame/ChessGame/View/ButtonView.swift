@@ -16,7 +16,7 @@ struct ButtonView: View {
     
     var body: some View {
         Button(action: {
-            //action()
+            print(text)
         }) {
             Text(text)
                 .font(.custom("VarelaRound-Regular", size: textSize))

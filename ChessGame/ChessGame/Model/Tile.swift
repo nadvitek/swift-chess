@@ -10,6 +10,7 @@ import Foundation
 class Tile {
     var x: Int
     var y: Int
+    var piece: Piece?
     
     init(x: Int, y: Int) {
         self.x = x

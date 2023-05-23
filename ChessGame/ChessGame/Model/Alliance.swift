@@ -7,7 +7,16 @@
 
 import Foundation
 
-enum Alliance {
+enum Alliance: CustomStringConvertible {
     case White
     case Black
+    
+    var description: String {
+        switch self {
+        case .White:
+            return "White"
+        case .Black:
+            return "Black"
+        }
+    }
 }

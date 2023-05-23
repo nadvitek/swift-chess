@@ -21,4 +21,8 @@ class Piece {
     func moveWithPiece(to tile: Tile) {
         self.tile = tile
     }
+    
+    func pieceImageName() -> String {
+        return pieceType.description + alliance.description
+    }
 }
