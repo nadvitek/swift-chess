@@ -11,6 +11,12 @@ class Piece {
     var tile: Tile
     let pieceType: PieceType
     let alliance: Alliance
+    var pieceImageName: String {
+        get {
+            return pieceType.description + alliance.description
+        }
+    }
+    var hasMovedYet: Bool = false
     
     init(on tile: Tile, being type: PieceType, ofColor alliance: Alliance) {
         self.tile = tile
@@ -18,11 +24,18 @@ class Piece {
         self.alliance = alliance
     }
     
-    func moveWithPiece(to tile: Tile) {
+    func move(to tile: Tile) {
         self.tile = tile
+        self.tile.piece = self
+        hasMovedYet = true
     }
     
-    func pieceImageName() -> String {
-        return pieceType.description + alliance.description
+    func isEnemyPiece(alliance: Alliance) -> Bool {
+        return self.alliance != alliance
+    }
+    
+    func isNext(to piece: Piece) -> Bool {
+        let ret = tile.y == piece.tile.y && abs(tile.x - piece.tile.x) == 1
+        return ret
     }
 }

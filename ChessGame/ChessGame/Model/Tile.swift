@@ -7,13 +7,32 @@
 
 import Foundation
 
-class Tile {
-    var x: Int
-    var y: Int
-    var piece: Piece?
+class Tile: NSObject, ObservableObject, NSCopying {
+    let x: Int
+    let y: Int
+    @Published var piece: Piece?
+    var isEmpty: Bool {
+        get {
+            piece == nil
+        }
+    }
+    @Published var isTargetTile: Bool = false
     
     init(x: Int, y: Int) {
         self.x = x
         self.y = y
+    }
+    
+    func compareTo(other: Tile) -> Bool {
+        return self.x == other.x && self.y == other.y
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = Tile(x: x, y: y)
+        if let copiedPiece = self.piece {
+            copy.piece = Piece(on: copy, being: copiedPiece.pieceType, ofColor: copiedPiece.alliance)
+            copy.piece?.hasMovedYet = copiedPiece.hasMovedYet
+        }
+        return copy
     }
 }

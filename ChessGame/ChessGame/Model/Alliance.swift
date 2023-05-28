@@ -19,4 +19,13 @@ enum Alliance: CustomStringConvertible {
             return "Black"
         }
     }
+    
+    var switchAlliance: Alliance {
+        switch self {
+        case .White:
+            return .Black
+        case .Black:
+            return .White
+        }
+    }
 }
