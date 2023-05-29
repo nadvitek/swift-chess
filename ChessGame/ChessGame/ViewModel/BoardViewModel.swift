@@ -11,6 +11,7 @@ import Foundation
     @Published var board: [[Tile]] = []
     var lastMove: Move?
     var markedTiles: [Tile] = []
+    var showedMoves: [Move] = []
     var whiteMoves: [Move] = []
     var blackMoves: [Move] = []
     let moveCreator: MoveCreator
@@ -22,6 +23,7 @@ import Foundation
         willSet(piece) {
             if (piece == nil) {
                 processingPromotion = false
+                calculateMoves()
             } else {
                 processingPromotion = true
             }
@@ -38,6 +40,7 @@ import Foundation
             }
             board.append(row)
         }
+        calculateMoves()
     }
     
     func resetSelection() {
@@ -45,10 +48,11 @@ import Foundation
             tile.isTargetTile = false
         }
         markedTiles.removeAll()
+        showedMoves.removeAll()
     }
     
     func getMove(destinationTile: Tile) -> Move? {
-        for move in getOnTurnPlayersMoves() {
+        for move in showedMoves {
             if move.destinationTile.compareTo(other: destinationTile) {
                 return move
             }
@@ -63,7 +67,7 @@ import Foundation
         return whiteMoves
     }
     
-    func moveExecuted() {
+    func calculateMoves() {
         whiteMoves.removeAll()
         blackMoves.removeAll()
         for y in 0..<8 {
@@ -76,12 +80,19 @@ import Foundation
     
     func createMovesForTile(x: Int, y: Int) {
         if let piece = board[y][x].piece {
-            if piece
-            let moves = moveCreator.createMoves(for: piece, board: board, lastMove: lastMove)
-            if (piece.alliance == .White) {
-                whiteMoves.append(contentsOf: moves)
+            if let lastMove = lastMove {
+                if (piece.alliance == lastMove.piece.alliance) {
+                    return
+                }
             } else {
-                blackMoves.append(contentsOf: moves)
+                if (piece.alliance != .White) {
+                    return
+                }
+            }
+            if (piece.alliance == .White) {
+                whiteMoves.append(contentsOf: moveCreator.createMoves(for: piece, board: board, lastMove: lastMove))
+            } else {
+                blackMoves.append(contentsOf: moveCreator.createMoves(for: piece, board: board, lastMove: lastMove))
             }
         }
     }
@@ -96,44 +107,67 @@ import Foundation
         }
     }
     
-    func processTile(x: Int, y: Int) {
-        if (boardViewModel.processingPromotion) {
-            return
+    func processTile(x: Int, y: Int, onTurn: Alliance) -> Bool {
+        if (processingPromotion) {
+            return false
         }
         
-        let selectedTile = boardViewModel.board[y][x]
+        let selectedTile = board[y][x]
         if (selectedTile.isTargetTile) {
-            let move = boardViewModel.getMove(destinationTile: selectedTile)!
-            boardViewModel.lastMove = move
+            let move = getMove(destinationTile: selectedTile)!
+            lastMove = move
             if (move.isEnPassanteMove()) {
-                boardViewModel.board[move.destinationTile.y + (move.piece.alliance == .White ? -1 : 1)][move.destinationTile.x].piece = nil
+                board[move.destinationTile.y + (move.piece.alliance == .White ? -1 : 1)][move.destinationTile.x].piece = nil
             }
             move.piece.move(to: selectedTile)
             move.sourceTile.piece = nil
-            boardViewModel.resetSelection()
+            resetSelection()
             if (move.isPromotionMove()) {
-                boardViewModel.promotedPiece = move.piece
+                promotedPiece = move.piece
+            } else {
+                calculateMoves()
             }
-            gameViewModel.nextTurn()
+            return true
         } else {
-            boardViewModel.resetSelection()
+            resetSelection()
             if let pieceOnTile = selectedTile.piece {
-                if pieceOnTile.alliance != gameViewModel.playersTurn {
-                    return
+                if pieceOnTile.alliance != onTurn {
+                    return false
                 }
-                let moves = boardViewModel.moveCreator.createMoves(for: pieceOnTile, board: boardViewModel.board, lastMove: boardViewModel.lastMove ?? nil)
+                let moves = getMovesOfPiece(pieceOnTile)
                 processMoves(moves: moves)
             }
         }
+        return false
+    }
+    
+    func getMovesOfPiece(_ piece: Piece) -> [Move] {
+        var moves:[Move] = []
+        var setOfMoves: [Move]
+        if piece.alliance == .White {
+            setOfMoves = whiteMoves
+        } else {
+            setOfMoves = blackMoves
+        }
+        
+        for move in setOfMoves {
+            if move.piece === piece {
+                moves.append(move)
+            }
+        }
+        
+        return moves
     }
     
     func processMoves(moves: [Move]) {
         for move in moves {
             let targetTile = move.destinationTile
-            boardViewModel.markedTiles.append(targetTile)
+            markedTiles.append(targetTile)
             
             targetTile.isTargetTile = true
         }
+        
+        showedMoves.append(contentsOf: moves)
     }
 }
 

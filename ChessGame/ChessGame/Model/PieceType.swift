@@ -31,4 +31,21 @@ enum PieceType: CustomStringConvertible {
             return "king"
         }
     }
+    
+    var sign: String {
+        switch self {
+        case .Pawn:
+            return "p"
+        case .Knight:
+            return "k"
+        case .Bishop:
+            return "b"
+        case .Rook:
+            return "r"
+        case .Queen:
+            return "q"
+        case .King:
+            return "K"
+        }
+    }
 }

@@ -14,10 +14,12 @@ class MoveFilter {
     init(_ moveCreator: MoveCreator){
         self.moveCreator = moveCreator
     }
+    
     func filter(_ moves: [Move], board: [[Tile]]) -> [Move]{
         var filteredMoves: [Move] = []
         for move in moves {
             copyBoard(board: board)
+            printBoard()
             if isMoveValid(move) {
                 filteredMoves.append(move)
             }
@@ -29,12 +31,12 @@ class MoveFilter {
         if (move.isEnPassanteMove()) {
             board?[move.destinationTile.y + (move.piece.alliance == .White ? -1 : 1)][move.destinationTile.x].piece = nil
         }
-        var sourceX = move.sourceTile.x
-        var sourceY = move.sourceTile.y
-        var destX = move.destinationTile.x
-        var destY = move.destinationTile.y
-        var destTile = board?[destY][destX]
-        var sourceTile = board?[sourceY][sourceX]
+        let sourceX = move.sourceTile.x
+        let sourceY = move.sourceTile.y
+        let destX = move.destinationTile.x
+        let destY = move.destinationTile.y
+        let destTile = board?[destY][destX]
+        let sourceTile = board?[sourceY][sourceX]
         sourceTile!.piece?.move(to: destTile!)
         sourceTile!.piece = nil
         
@@ -51,9 +53,9 @@ class MoveFilter {
                 let tile = board![y][x]
                 if let pieceOnTile = tile.piece {
                     if (pieceOnTile.alliance != move.piece.alliance) {
-                        let moves = moveCreator.createMovesForPiece(pieceOnTile)
-                        for move in moves {
-                            if let targetPiece = move.destinationTile.piece {
+                        let moves = moveCreator.createMoves(for: pieceOnTile, board: board!, lastMove: move)
+                        for anotherMove in moves {
+                            if let targetPiece = anotherMove.destinationTile.piece {
                                 if targetPiece.pieceType == .King && targetPiece.alliance == move.piece.alliance {
                                     return true
                                 }
@@ -80,5 +82,21 @@ class MoveFilter {
             newBoard.append(row)
         }
         self.board = newBoard
+    }
+    
+    func printBoard() {
+        for y in 0..<8 {
+            for x in 0..<8 {
+                if let piece = board?[y][x].piece {
+                    print("\(piece.pieceType.sign)", terminator: "")
+                } else {
+                    print(" ", terminator: "")
+                }
+            }
+            print(" ")
+        }
+        print(" ")
+        print(" ")
+        print(" ")
     }
 }

@@ -12,17 +12,19 @@ class MoveCreator {
     var lastMove: Move?
     
     func createMoves(for piece: Piece, board: [[Tile]], lastMove: Move?) -> [Move] {
+        var moves: [Move] = []
         self.lastMove = lastMove
         self.board = board
         if let lastMove = lastMove {
             if lastMove.piece.alliance != piece.alliance {
-                return createMovesForPiece(piece)
+                moves = createMovesForPiece(piece)
             }
         } else {
             if piece.alliance == .White {
-                return createMovesForPiece(piece)
+                moves = createMovesForPiece(piece)
             }
         }
+        return moves
     }
     
     func createMovesForPiece(_ piece: Piece) -> [Move] {

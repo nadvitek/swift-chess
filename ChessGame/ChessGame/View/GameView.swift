@@ -93,7 +93,10 @@ struct BoardView: View {
     }
     
     func tileAction(x: Int, y: Int) {
-        boardViewModel.processTile(x: x, y: y)
+        let moveExecuted = boardViewModel.processTile(x: x, y: y, onTurn: gameViewModel.playersTurn)
+        if moveExecuted {
+            gameViewModel.nextTurn()
+        }
     }
 }
 
