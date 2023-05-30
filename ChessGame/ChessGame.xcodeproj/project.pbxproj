@@ -26,6 +26,7 @@
 		A3E22A0E2A1D0A0B0007B860 /* Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E22A0D2A1D0A0B0007B860 /* Move.swift */; };
 		A3EFFF2E2A0EE672006487E2 /* VarelaRound-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3EFFF2D2A0EE672006487E2 /* VarelaRound-Regular.ttf */; };
 		A3EFFF322A0EEA42006487E2 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EFFF312A0EEA42006487E2 /* ButtonView.swift */; };
+		A3FF2FC32A25EC8A00644AC0 /* OptionsButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF2FC22A25EC8A00644AC0 /* OptionsButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		A3EFFF2D2A0EE672006487E2 /* VarelaRound-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VarelaRound-Regular.ttf"; sourceTree = "<group>"; };
 		A3EFFF2F2A0EE824006487E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A3EFFF312A0EEA42006487E2 /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
+		A3FF2FC22A25EC8A00644AC0 /* OptionsButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 				A38BDBCF2A1BA9E200E62583 /* GameView.swift */,
 				A38D87612A1F9BDC00C41E9A /* TileView.swift */,
 				A3D301012A21EFE600882F48 /* PromotionView.swift */,
+				A3FF2FC22A25EC8A00644AC0 /* OptionsButtonView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 				A309F5142A223CDC00180AE3 /* MoveFilter.swift in Sources */,
 				A36799C92A0BBB0000F56B46 /* Tile.swift in Sources */,
 				A38BDBD02A1BA9E200E62583 /* GameView.swift in Sources */,
+				A3FF2FC32A25EC8A00644AC0 /* OptionsButtonView.swift in Sources */,
 				A36799C72A0BBA4C00F56B46 /* PieceType.swift in Sources */,
 				A36799B62A0BB9AF00F56B46 /* ChessGameApp.swift in Sources */,
 				A38D87622A1F9BDC00C41E9A /* TileView.swift in Sources */,

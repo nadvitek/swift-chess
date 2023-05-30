@@ -273,6 +273,25 @@ class MoveCreator {
             moves.append(Move(from: king.tile, to: board[king.tile.y + 1][king.tile.x], with: king))
         }
         
+        if (!king.hasMovedYet && board[king.tile.y][king.tile.x + 2].isEmpty && board[king.tile.y][king.tile.x + 1].isEmpty) {
+            if let rook = board[king.tile.y][7].piece {
+                if !rook.hasMovedYet && !rook.isEnemyPiece(alliance: king.alliance) && rook.pieceType == .Rook {
+                    moves.append(Move(from: king.tile, to: board[king.tile.y][king.tile.x + 2], with: king))
+                }
+            }
+        }
+        
+        
+        if (!king.hasMovedYet && board[king.tile.y][king.tile.x - 2].isEmpty && board[king.tile.y][king.tile.x -  1].isEmpty && board[king.tile.y][king.tile.x -  3].isEmpty) {
+            if let rook = board[king.tile.y][0].piece {
+                if !rook.hasMovedYet && !rook.isEnemyPiece(alliance: king.alliance) && rook.pieceType == .Rook {
+                    moves.append(Move(from: king.tile, to: board[king.tile.y][king.tile.x - 2], with: king))
+                }
+            }
+        }
+        
+        
+        
         return moves
     }
     

@@ -15,18 +15,14 @@ struct PromotionView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: size/10)
-                .frame(width: size, height: size * 0.3)
+                .frame(width: size, height: size * 0.2)
                 .foregroundColor(Color("boardColor"))
                 .overlay(
                     RoundedRectangle(cornerRadius: size/10)
                         .stroke(Color("buttonColor"), lineWidth: 4)
                 )
-            Text("Choose promoted piece:")
-                .font(.custom("VarelaRound-Regular", size: 18))
-                .foregroundColor(Color.white)
-                .offset(y: -size * 0.1)
             
-            HStack() {
+            HStack(spacing: 15) {
                 let tile = piece!.tile
                 
                 Button {
@@ -35,8 +31,8 @@ struct PromotionView: View {
                 } label: {
                     Image("queen\(piece!.alliance.description)")
                         .resizable()
-                        .frame(width: size * 0.2, height: size * 0.2)
-                }.offset(y: size * 0.03)
+                        .frame(width: size * 0.17, height: size * 0.17)
+                }
                 
                 Button {
                     tile.piece = Piece(on: tile, being: .Rook, ofColor: piece!.alliance)
@@ -44,8 +40,8 @@ struct PromotionView: View {
                 } label: {
                     Image("rook\(piece!.alliance.description)")
                         .resizable()
-                        .frame(width: size * 0.2, height: size * 0.2)
-                }.offset(y: size * 0.03)
+                        .frame(width: size * 0.17, height: size * 0.17)
+                }
                 
                 Button {
                     tile.piece = Piece(on: tile, being: .Bishop, ofColor: piece!.alliance)
@@ -53,8 +49,8 @@ struct PromotionView: View {
                 } label: {
                     Image("bishop\(piece!.alliance.description)")
                         .resizable()
-                        .frame(width: size * 0.2, height: size * 0.2)
-                }.offset(y: size * 0.03)
+                        .frame(width: size * 0.17, height: size * 0.17)
+                }
                 
                 Button {
                     tile.piece = Piece(on: tile, being: .Knight, ofColor: piece!.alliance)
@@ -62,8 +58,8 @@ struct PromotionView: View {
                 } label: {
                     Image("knight\(piece!.alliance.description)")
                         .resizable()
-                        .frame(width: size * 0.2, height: size * 0.2)
-                }.offset(y: size * 0.03)
+                        .frame(width: size * 0.17, height: size * 0.17)
+                }
             }
         }
     }

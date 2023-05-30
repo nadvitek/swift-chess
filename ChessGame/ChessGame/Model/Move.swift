@@ -27,15 +27,19 @@ class Move {
     }
     
     func isSmallCastleMove() -> Bool {
-        return piece.pieceType == .King && destinationTile.x == (piece.tile.x + 2)
+        return piece.pieceType == .King && destinationTile.x == (sourceTile.x + 2)
     }
     
     func isBigCastleMove() -> Bool {
-        return piece.pieceType == .King && destinationTile.x == (piece.tile.x - 3)
+        return piece.pieceType == .King && destinationTile.x == (sourceTile.x - 2)
     }
     
     func isPawnTwoStepMove() -> Bool {
         return piece.pieceType == .Pawn && abs(destinationTile.y - sourceTile.y) == 2
+    }
+    
+    func isCastleMove() -> Bool {
+        return isSmallCastleMove() || isBigCastleMove()
     }
     
     

@@ -18,7 +18,7 @@ class MoveFilter {
     func filter(_ moves: [Move], board: [[Tile]]) -> [Move]{
         var filteredMoves: [Move] = []
         for move in moves {
-            copyBoard(board: board)
+            self.board = copyBoard(board: board)
             printBoard()
             if isMoveValid(move) {
                 filteredMoves.append(move)
@@ -31,6 +31,27 @@ class MoveFilter {
         if (move.isEnPassanteMove()) {
             board?[move.destinationTile.y + (move.piece.alliance == .White ? -1 : 1)][move.destinationTile.x].piece = nil
         }
+        
+        if (move.isCastleMove()) {
+            let boardBeforeMove: [[Tile]] = copyBoard(board: board!)
+            let sourceX = move.sourceTile.x
+            let sourceY = move.sourceTile.y
+            let destX = move.destinationTile.x + (move.isSmallCastleMove() ? -1 : 1)
+            let destY = move.destinationTile.y
+            let destTile = board?[destY][destX]
+            let sourceTile = board?[sourceY][sourceX]
+            sourceTile!.piece?.move(to: destTile!)
+            sourceTile!.piece = nil
+            
+            if (isKingInCheck(move)) {
+                return false
+            }
+            self.board = boardBeforeMove
+        }
+        
+        
+        
+        
         let sourceX = move.sourceTile.x
         let sourceY = move.sourceTile.y
         let destX = move.destinationTile.x
@@ -72,7 +93,7 @@ class MoveFilter {
         return false
     }
     
-    func copyBoard(board: [[Tile]]) {
+    func copyBoard(board: [[Tile]]) -> [[Tile]] {
         var newBoard: [[Tile]] = []
         for y in 0..<8 {
             var row: [Tile] = []
@@ -81,7 +102,7 @@ class MoveFilter {
             }
             newBoard.append(row)
         }
-        self.board = newBoard
+        return newBoard
     }
     
     func printBoard() {

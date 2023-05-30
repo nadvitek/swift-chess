@@ -16,8 +16,7 @@ import Foundation
     var blackMoves: [Move] = []
     let moveCreator: MoveCreator
     let moveFilter: MoveFilter
-    var whiteKing: Piece?
-    var blackKing: Piece?
+    var gameOver = false
     @Published var processingPromotion = false
     var promotedPiece: Piece? {
         willSet(piece) {
@@ -62,7 +61,7 @@ import Foundation
     
     func getOnTurnPlayersMoves() -> [Move] {
         if let lastPlayedMove = lastMove {
-            return lastPlayedMove.piece.alliance == .White ? whiteMoves : blackMoves
+            return lastPlayedMove.piece.alliance == .White ? blackMoves : whiteMoves
         }
         return whiteMoves
     }
@@ -76,6 +75,9 @@ import Foundation
             }
         }
         filterMoves()
+        if getOnTurnPlayersMoves().isEmpty {
+            gameOver = true
+        }
     }
     
     func createMovesForTile(x: Int, y: Int) {
@@ -119,6 +121,13 @@ import Foundation
             if (move.isEnPassanteMove()) {
                 board[move.destinationTile.y + (move.piece.alliance == .White ? -1 : 1)][move.destinationTile.x].piece = nil
             }
+            
+            if (move.isCastleMove()) {
+                let rookTile = board[move.destinationTile.y][move.isSmallCastleMove() ? 7 : 0]
+                rookTile.piece?.move(to: board[move.destinationTile.y][move.isSmallCastleMove() ? 5 : 3])
+                rookTile.piece = nil
+            }
+            
             move.piece.move(to: selectedTile)
             move.sourceTile.piece = nil
             resetSelection()
@@ -229,11 +238,9 @@ extension BoardViewModel {
     
     func addKing(tile: Tile) -> Piece? {
         if tile.y == 0 {
-            whiteKing = Piece(on: tile, being: .King, ofColor: .White)
-            return whiteKing
+            return Piece(on: tile, being: .King, ofColor: .White)
         } else if tile.y == 7 {
-            blackKing = Piece(on: tile, being: .King, ofColor: .Black)
-            return blackKing
+            return Piece(on: tile, being: .King, ofColor: .Black)
         }
         return nil
     }

@@ -9,52 +9,40 @@ import SwiftUI
 
 struct GameView: View {
     @StateObject var gameViewModel = GameViewModel()
-    let letters = ["A", "B", "C", "D", "E", "F", "G", "H"]
     
     var body: some View {
         GeometryReader { geo in
-            ZStack {
                 Rectangle()
                     .fill()
                     .ignoresSafeArea()
                     .foregroundColor(Color("backgroundColor"))
-                let size = geo.size.width * 0.9
+            VStack {
+                HStack {
+                    Text("Player Black")
+                        .font(.custom("VarelaRound-Regular", size: 30))
+                    Spacer()
+                    Text("20:00")
+                        .font(.custom("VarelaRound-Regular", size: 30))
+                }.padding()
                 
-                Rectangle()
-                    .frame(width: size + 1, height: size + 1)
-                    .foregroundColor(Color("boardFrameColor"))
+                OptionsButtonView(size: geo.size.width * 0.15)
                 
-                
-                Rectangle()
-                    .frame(width: size, height: size)
-                .foregroundColor(Color("boardColor"))
-                
-                BoardView(size: size).environmentObject(gameViewModel)
-                
-                
-                
-                VStack {
-                    let offset = size * 0.053
-                    ForEach(0..<8) { i in
-                        Text(String(8 - i))
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .offset(y: offset * Double(i))
-                    }
-                }.position(x: size * 0.085, y: size * 0.89)
+                BoardView(size: geo.size.width * 0.9)
+                    .environmentObject(gameViewModel)
                 
                 HStack {
-                    let offset = size * 0.053
-                    ForEach(0..<8) { i in
-                        Text(letters[i])
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .offset(x: offset * Double(i))
-                    }
-                    
-                }.position(x: size * 0.37, y: size * 1.54)
+                    Text("20:00")
+                        .font(.custom("VarelaRound-Regular", size: 30))
+                    Spacer()
+                    Text("Player White")
+                        .font(.custom("VarelaRound-Regular", size: 30))
+                }.padding()
                 
-            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            }
+            
+            if(gameViewModel.gameOver) {
+                Text("\(gameViewModel.playersTurn.switchAlliance.description) Player Wins! \(geo.size.width)")
+            }
         }
     }
 }
@@ -62,6 +50,7 @@ struct GameView: View {
 struct BoardView: View {
     @StateObject var boardViewModel = BoardViewModel()
     @EnvironmentObject var gameViewModel: GameViewModel
+    let letters = ["A", "B", "C", "D", "E", "F", "G", "H"]
     let boardSize: Double
     
     
@@ -71,21 +60,55 @@ struct BoardView: View {
     
     var body: some View {
         ZStack {
-            HStack(spacing:1) {
-                ForEach((0..<8), id:\.self) { x in
-                    VStack(spacing:1) {
-                        ForEach((0..<8).reversed(), id:\.self) { y in
-                            TileView(tile: boardViewModel.board[y][x], tileSize: boardSize * 0.106, action: {self.tileAction(x: x, y: y)})
+            
+            Rectangle()
+                .frame(width: boardSize + 1, height: boardSize + 1)
+                .foregroundColor(Color("boardFrameColor"))
+            
+            Rectangle()
+                .frame(width: boardSize, height: boardSize)
+                .foregroundColor(Color("boardColor"))
+            
+            
+            
+            
+            VStack(spacing:2) {
+                HStack(spacing:5) {
+                    VStack(spacing: boardSize/19) {
+                        ForEach(0..<8) { i in
+                            Text(String(8 - i))
+                                .font(.headline)
+                                .foregroundColor(.white)
+                        }
+                    }.frame(height: boardSize*0.8)
+                    HStack(spacing:1) {
+                        ForEach((0..<8), id:\.self) { x in
+                            VStack(spacing:1) {
+                                ForEach((0..<8).reversed(), id:\.self) { y in
+                                    TileView(tile: boardViewModel.board[y][x], tileSize: boardSize * 0.106, action: {self.tileAction(x: x, y: y)})
+                                }
+                            }
                         }
                     }
+                }.offset(x:-7)
+                HStack(spacing: boardSize/13) {
+                    ForEach(0..<8) { i in
+                        Text(letters[i])
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    
                 }
-            }
+            }.offset(y:10)
             
             if (boardViewModel.processingPromotion) {
                 PromotionView(size: boardSize, piece: boardViewModel.promotedPiece!, action: {finishPromotion()})
-                    .offset(y: boardSize * 0.68 * (boardViewModel.promotedPiece?.alliance == .White ? 1 : -1))
+                    .offset(y: boardSize * (boardViewModel.promotedPiece?.alliance == .White ? 0.62 : -0.62))
             }
-        }
+            
+            
+        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        
     }
     
     func finishPromotion() {
@@ -97,6 +120,7 @@ struct BoardView: View {
         if moveExecuted {
             gameViewModel.nextTurn()
         }
+        gameViewModel.gameOver = boardViewModel.gameOver
     }
 }
 
@@ -106,21 +130,26 @@ struct TileView: View {
     let action: () -> Void
     
     var body: some View {
-        Button {
-            action()
-        } label: {
+        ZStack {
+            Rectangle()
+                .foregroundColor(decideTileColor())
+                .frame(width: tileSize, height: tileSize)
             if let pieceOnTile = tile.piece {
                 Image(pieceOnTile.pieceImageName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: tileSize, height: tileSize, alignment: .center)
-            } else {
-                Rectangle()
-                    .foregroundColor(decideTileColor())
+            }
+            
+            Circle()
+                .foregroundColor(.green)
+                .frame(width: tile.isTargetTile && tile.isEmpty ? tileSize * 0.6 : 0, height: tile.isTargetTile && tile.isEmpty ? tileSize * 0.6 : 0)
+        }
+        .onTapGesture {
+            withAnimation(.spring()) {
+                action()
             }
         }
-            .frame(width: tileSize, height: tileSize)
-            .background(decideTileColor())
     }
     
     
@@ -129,7 +158,6 @@ struct TileView: View {
             if (!tile.isEmpty) {
                 return Color.red
             }
-            return Color.green
         }
         
         return Color((tile.x + tile.y) % 2 == 0 ? "darkTileColor" : "lightTileColor")

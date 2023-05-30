@@ -10,6 +10,7 @@ import Foundation
 
 @MainActor class GameViewModel: ObservableObject {
     @Published var playersTurn: Alliance = .White
+    @Published var gameOver = false
     
     func nextTurn() {
         playersTurn = playersTurn.switchAlliance
