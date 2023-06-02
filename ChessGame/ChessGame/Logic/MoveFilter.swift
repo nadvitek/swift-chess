@@ -19,7 +19,6 @@ class MoveFilter {
         var filteredMoves: [Move] = []
         for move in moves {
             self.board = copyBoard(board: board)
-            printBoard()
             if isMoveValid(move) {
                 filteredMoves.append(move)
             }
