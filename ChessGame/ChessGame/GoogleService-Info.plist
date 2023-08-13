@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>143399503505-secps7jbgrkhbcf4htf9oumrfc92akrc.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.143399503505-secps7jbgrkhbcf4htf9oumrfc92akrc</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAmhhDNCgAm_3gXoBKUJFck6QWmo0sum18</string>
+	<key>GCM_SENDER_ID</key>
+	<string>143399503505</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.nademvit.ChessGame</string>
+	<key>PROJECT_ID</key>
+	<string>czechmate-9bcde</string>
+	<key>STORAGE_BUCKET</key>
+	<string>czechmate-9bcde.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:143399503505:ios:53f8034ddc219b74bee130</string>
+</dict>
+</plist>
