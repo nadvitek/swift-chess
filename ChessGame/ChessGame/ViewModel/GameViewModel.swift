@@ -13,6 +13,8 @@ class GameViewModel: ObservableObject {
     @Published var gameOver = false
     @Published var whiteTime: Double = 1200
     @Published var blackTime: Double = 1200
+    @Published var blackPlayerName: String = "Player Black"
+    @Published var whitePlayerName: String = "Player White"
     var whiteClock: Timer?
     var blackClock: Timer?
     

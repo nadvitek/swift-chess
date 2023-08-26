@@ -21,7 +21,7 @@ struct ButtonView: View {
             Text(text)
                 .font(.custom("VarelaRound-Regular", size: textSize))
                 .foregroundColor(Color("buttonTextColor"))
-        }.frame(width: 100, height: 50)
+        }.frame(width: 100, height: 70)
             .background(Color("buttonColor"))
             .cornerRadius(cornerRadius)
     }
@@ -29,6 +29,6 @@ struct ButtonView: View {
 
 struct ButtonView_Previews: PreviewProvider {
     static var previews: some View {
-        ButtonView(cornerRadius: 30, text: "ButtonName", textSize: 25)
+        ButtonView(cornerRadius: 50, text: "ButtonName", textSize: 25)
     }
 }

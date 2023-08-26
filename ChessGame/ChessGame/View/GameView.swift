@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct GameView: View {
-    @StateObject var gameViewModel = GameViewModel()
+    @ObservedObject var gameViewModel = GameViewModel()
+    
+    init(whitePlayer: String = "Player White", blackPlayer: String = "Player Black") {
+        gameViewModel.whitePlayerName = whitePlayer
+        gameViewModel.blackPlayerName = blackPlayer
+    }
     
     var body: some View {
         GeometryReader { geo in
@@ -18,7 +23,7 @@ struct GameView: View {
                     .foregroundColor(Color("backgroundColor"))
             VStack() {
                 HStack {
-                    Text("Player Black")
+                    Text(gameViewModel.blackPlayerName)
                         .font(.custom("VarelaRound-Regular", size: 30))
                     Spacer()
                     Text(gameViewModel.showBlackTime())
@@ -38,7 +43,7 @@ struct GameView: View {
                     Text(gameViewModel.showWhiteTime())
                         .font(.custom("VarelaRound-Regular", size: 30))
                     Spacer()
-                    Text("Player White")
+                    Text(gameViewModel.whitePlayerName)
                         .font(.custom("VarelaRound-Regular", size: 30))
                 }.padding()
                 
@@ -236,6 +241,6 @@ struct TileView: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-        GameView()
+        GameView(whitePlayer: "A", blackPlayer: "B")
     }
 }

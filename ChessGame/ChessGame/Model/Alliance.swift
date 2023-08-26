@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Alliance: CustomStringConvertible {
+enum Alliance: String, CustomStringConvertible {
     case White
     case Black
     
