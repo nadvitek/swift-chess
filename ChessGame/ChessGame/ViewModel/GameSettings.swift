@@ -9,11 +9,12 @@ import Foundation
 
 class GameSettings: ObservableObject {
     @Published var gameStarted = false
-    @Published var gameType: GameType = .None {
-        didSet {
-            gameStarted = true
-        }
-    }
+    @Published var whitePlayerName = "Player White"
+    @Published var blackPlayerName = "Player Black"
+    
+    var gameType: GameType = .None
+    var playersAlliance: Alliance = .White
+    
 }
 
 enum GameType {

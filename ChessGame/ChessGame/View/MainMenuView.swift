@@ -17,10 +17,16 @@ let matches = [Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), oppo
 
 struct MainMenuView: View {
     @State var nickname = ""
-    @State var matchHistory: [Game] = []
+    @State var matchHistory: [Game] = matches
     @StateObject var accountManager = AccountManager()
     @State var setNicknameView: Bool
     @StateObject var gameSettings = GameSettings()
+    @State var multiPlayerSelected = false
+    @State var customBoardSelected = false
+    @State var singlePlayerSelected = false
+    @State var blackPlayerChosen = true
+    @State var aiChosen = true
+    @State var infoViewShown = false
     
     init(email: String, newAccount: Bool) {
         setNicknameView = newAccount
@@ -30,11 +36,9 @@ struct MainMenuView: View {
         }
     }
     
-    
-    
     var body: some View {
         if (gameSettings.gameStarted) {
-            gameSettings.gameType == .Bot ? GameView(whitePlayer: nickname) : GameView(blackPlayer: nickname)
+            GameView().environmentObject(gameSettings)
         } else {
             mainMenu
         }
@@ -51,6 +55,9 @@ struct MainMenuView: View {
                         Image(systemName: "questionmark.circle.fill")
                             .resizable()
                             .frame(width: 40, height: 40)
+                            .onTapGesture {
+                                infoViewShown = true
+                            }
                         Spacer()
                         Text("Welcome \(accountManager.account.nickname)")
                             .font(.getFont(of: 20))
@@ -58,13 +65,13 @@ struct MainMenuView: View {
                         Image(systemName: "person.crop.circle.fill")
                             .resizable()
                             .frame(width: 40, height: 40)
+                            .onTapGesture {
+                                setNicknameView = true
+                            }
                     }.padding()
+                        .disabled(setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected)
                     HStack {
-                        NavigationLink {
-                            SinglePlayerOptions()
-                                .environmentObject(gameSettings)
-                        } label: {
-                            RoundedRectangle(cornerRadius: 50)
+                        RoundedRectangle(cornerRadius: 50)
                                 .foregroundColor(.button)
                                 .frame(width: 100, height: 70)
                                 .overlay {
@@ -72,10 +79,35 @@ struct MainMenuView: View {
                                         .foregroundColor(.black)
                                         .font(.getFont(of: 22))
                                 }
-                        }
-                        ButtonView(cornerRadius: 50, text: "Multi Player", textSize: 22)
-                        ButtonView(cornerRadius: 50, text: "Custom Board", textSize: 22)
-                    }
+                                .onTapGesture {
+                                    singlePlayerSelected = true
+                                }
+                        RoundedRectangle(cornerRadius: 50)
+                            .foregroundColor(.button)
+                            .frame(width: 100, height: 70)
+                            .overlay {
+                                Text("Multi Player")
+                                    .foregroundColor(.black)
+                                    .font(.getFont(of: 22))
+                                    .multilineTextAlignment(.center)
+                            }
+                            .onTapGesture {
+                                multiPlayerSelected = true
+                            }
+                        
+                        RoundedRectangle(cornerRadius: 50)
+                            .foregroundColor(.button)
+                            .frame(width: 100, height: 70)
+                            .overlay {
+                                Text("Custom Board")
+                                    .foregroundColor(.black)
+                                    .font(.getFont(of: 22))
+                                    .multilineTextAlignment(.center)
+                            }
+                            .onTapGesture {
+                                customBoardSelected = true
+                            }
+                    }.disabled(setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected)
                     Text("Match History")
                         .font(.getFont(of: 30))
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -92,8 +124,21 @@ struct MainMenuView: View {
                         })
                     }
                 }.padding(.all, 3)
+                    .blur(radius: (setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected) ? 7 : 0)
                 if (setNicknameView) {
                     setNickNameView.offset(y: 30)
+                }
+                if (multiPlayerSelected) {
+                    multiPlayerSelectedView.offset(y: 30)
+                }
+                if (customBoardSelected) {
+                    customBoardSelectedView
+                }
+                if (singlePlayerSelected) {
+                    gameParameters
+                }
+                if (infoViewShown) {
+                    infoView
                 }
             }
         }
@@ -143,11 +188,190 @@ struct MainMenuView: View {
         }
     }
     
+    var multiPlayerSelectedView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .frame(width: 260, height: 210)
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 250, height: 200)
+                .foregroundColor(.button)
+            VStack (spacing: 20) {
+                Text("Multi Player is not implemented yet.")
+                    .foregroundColor(.black)
+                    .font(.getFont(of: 20))
+                    .frame(maxWidth: 230)
+                    .multilineTextAlignment(.center)
+                
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.black)
+                    .frame(width: 150, height: 50)
+                    .overlay {
+                        Text("Ok")
+                            .foregroundColor(.white)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
+                    }
+                    .shadow(radius: 5)
+                    .onTapGesture {
+                        multiPlayerSelected = false
+                    }
+                
+            }
+        }
+    }
+    
+    var customBoardSelectedView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .frame(width: 260, height: 210)
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 250, height: 200)
+                .foregroundColor(.button)
+            VStack (spacing: 20) {
+                Text("Custom Board is not implemented yet.")
+                    .foregroundColor(.black)
+                    .font(.getFont(of: 20))
+                    .frame(maxWidth: 230)
+                    .multilineTextAlignment(.center)
+                
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.black)
+                    .frame(width: 150, height: 50)
+                    .overlay {
+                        Text("Ok")
+                            .foregroundColor(.white)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
+                    }
+                    .shadow(radius: 5)
+                    .onTapGesture {
+                        customBoardSelected = false
+                    }
+                
+            }
+        }
+    }
+    
     func didSetNickname() {
         if !nickname.isEmpty {
             setNicknameView.toggle()
             accountManager.account.nickname = nickname
         }
+    }
+    
+    var gameParameters: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .frame(width: 260, height: 280)
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 250, height: 270)
+                .foregroundColor(.button)
+            VStack (spacing: 20) {
+                Text("Game Parameters")
+                    .foregroundColor(.black)
+                    .font(.getFont(of: 25))
+                    .frame(maxWidth: 230)
+                    .multilineTextAlignment(.center)
+                VStack {
+                    Text("Your Color:")
+                        .font(.getFont(of: 20))
+                        .foregroundColor(.black)
+                    Toggle("", isOn: $blackPlayerChosen).frame(maxWidth: 150)
+                        .toggleStyle(ColoredToggleStyle(label: blackPlayerChosen ? "Black" : "White", onColor: .black, offColor: .white, thumbColor: blackPlayerChosen ? .white : .black))
+                    Toggle("", isOn: $aiChosen).frame(maxWidth: 150)
+                        .toggleStyle(ColoredToggleStyle(label: aiChosen ? "vs AI" : "Local", onColor: .black, offColor: .white, thumbColor: aiChosen ? .white : .black))
+                    
+                }.frame(maxWidth: 230)
+                HStack {
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundColor(.black)
+                        .frame(width: 100, height: 50)
+                        .overlay {
+                            Text("Back")
+                                .foregroundColor(.white)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                        }
+                        .shadow(radius: 5)
+                        .onTapGesture {
+                            singlePlayerSelected = false
+                        }
+                    
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundColor(.black)
+                        .frame(width: 100, height: 50)
+                        .overlay {
+                            Text("Play")
+                                .foregroundColor(.white)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                            
+                        }
+                        .shadow(radius: 5)
+                        .onTapGesture {
+                            playGame()
+                        }
+                }
+                
+            }
+        }
+    }
+    
+    var infoView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .frame(width: 260, height: 240)
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 250, height: 230)
+                .foregroundColor(.button)
+            VStack (spacing: 10) {
+                Text("This application was developed by Vít Nademlejnský as a part of his portfolio and a demonstration of his skills.")
+                    .foregroundColor(.black)
+                    .font(.getFont(of: 20))
+                    .frame(maxWidth: 230)
+                    .multilineTextAlignment(.center)
+                
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.black)
+                    .frame(width: 150, height: 50)
+                    .overlay {
+                        Text("Ok")
+                            .foregroundColor(.white)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
+                    }
+                    .shadow(radius: 5)
+                    .onTapGesture {
+                        infoViewShown = false
+                    }
+                
+            }
+        }.offset(y: 6)
+    }
+    
+    func playGame() {
+        gameSettings.playersAlliance = blackPlayerChosen ? .Black : .White
+        if (aiChosen) {
+            gameSettings.gameType = .Bot
+            if blackPlayerChosen {
+                gameSettings.whitePlayerName = "Bot"
+                gameSettings.blackPlayerName = nickname
+            } else {
+                gameSettings.blackPlayerName = "Bot"
+                gameSettings.whitePlayerName = nickname
+            }
+        } else {
+            gameSettings.gameType = .Offline
+            if blackPlayerChosen {
+                gameSettings.blackPlayerName = nickname
+            } else {
+                gameSettings.whitePlayerName = nickname
+            }
+        }
+        gameSettings.gameStarted = true
     }
 }
 

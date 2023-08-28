@@ -13,8 +13,6 @@ class GameViewModel: ObservableObject {
     @Published var gameOver = false
     @Published var whiteTime: Double = 1200
     @Published var blackTime: Double = 1200
-    @Published var blackPlayerName: String = "Player Black"
-    @Published var whitePlayerName: String = "Player White"
     var whiteClock: Timer?
     var blackClock: Timer?
     
@@ -48,8 +46,14 @@ class GameViewModel: ObservableObject {
     func startWhiteClock() {
         blackClock?.invalidate()
         blackClock = nil
+        
         whiteClock = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            self.whiteTime -= 0.1
+            if (self.whiteTime > 0) {
+                self.whiteTime -= 0.1
+            } else {
+                self.invalidateClocks()
+                self.gameOver = true
+            }
         }
     }
     
@@ -57,7 +61,19 @@ class GameViewModel: ObservableObject {
         whiteClock?.invalidate()
         whiteClock = nil
         blackClock = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            self.blackTime -= 0.1
+            if (self.blackTime > 0) {
+                self.blackTime -= 0.1
+            } else {
+                self.invalidateClocks()
+                self.gameOver = true
+            }
         }
+    }
+    
+    func invalidateClocks() {
+        whiteClock?.invalidate()
+        whiteClock = nil
+        blackClock?.invalidate()
+        blackClock = nil
     }
 }

@@ -9,48 +9,81 @@ import SwiftUI
 
 struct GameView: View {
     @ObservedObject var gameViewModel = GameViewModel()
-    
-    init(whitePlayer: String = "Player White", blackPlayer: String = "Player Black") {
-        gameViewModel.whitePlayerName = whitePlayer
-        gameViewModel.blackPlayerName = blackPlayer
-    }
+    @EnvironmentObject var gameSettings: GameSettings
     
     var body: some View {
+        gameView
+    }
+    
+    var gameView: some View {
         GeometryReader { geo in
                 Rectangle()
                     .fill()
                     .ignoresSafeArea()
                     .foregroundColor(Color("backgroundColor"))
-            VStack() {
-                HStack {
-                    Text(gameViewModel.blackPlayerName)
-                        .font(.custom("VarelaRound-Regular", size: 30))
-                    Spacer()
-                    Text(gameViewModel.showBlackTime())
-                        .font(.custom("VarelaRound-Regular", size: 30))
-                }.padding()
-                
-                OptionsButtonView(size: geo.size.width * 0.15, alliance: Alliance.Black)
-                
-                
-                BoardView(size: geo.size.width * 0.9)
-                    .environmentObject(gameViewModel)
-                
-                
-                OptionsButtonView(size: geo.size.width * 0.15, alliance: Alliance.White)
-                
-                HStack {
-                    Text(gameViewModel.showWhiteTime())
-                        .font(.custom("VarelaRound-Regular", size: 30))
-                    Spacer()
-                    Text(gameViewModel.whitePlayerName)
-                        .font(.custom("VarelaRound-Regular", size: 30))
-                }.padding()
-                
+            ZStack {
+                VStack() {
+                    HStack {
+                        Text(gameSettings.blackPlayerName)
+                            .font(.getFont(of: 30))
+                        Spacer()
+                        Text(gameViewModel.showBlackTime())
+                            .font(.getFont(of: 30))
+                    }.padding()
+                    
+                    OptionsButtonView(size: geo.size.width * 0.15, alliance: Alliance.Black)
+                    
+                    
+                    BoardView(size: geo.size.width * 0.9)
+                        .environmentObject(gameViewModel)
+                    
+                    
+                    OptionsButtonView(size: geo.size.width * 0.15, alliance: Alliance.White)
+                    
+                    HStack {
+                        Text(gameViewModel.showWhiteTime())
+                            .font(.getFont(of: 30))
+                        Spacer()
+                        Text(gameSettings.whitePlayerName)
+                            .font(.getFont(of: 30))
+                    }.padding()
+                    
+                }
+                if(gameViewModel.gameOver) {
+                    gameOverView
+                }
             }
-            
-            if(gameViewModel.gameOver) {
-                Text("\(gameViewModel.playersTurn.switchAlliance.description) Player Wins! \(geo.size.width)")
+        }
+    }
+    
+    var gameOverView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .frame(width: 260, height: 210)
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 250, height: 200)
+                .foregroundColor(.button)
+            VStack (spacing: 70) {
+                Text("\(gameViewModel.playersTurn.switchAlliance.description) Player Wins!")
+                    .foregroundColor(.black)
+                    .font(.getFont(of: 25))
+                
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.black)
+                    .frame(width: 150, height: 50)
+                    .overlay {
+                        Text("Return to Main Menu")
+                            .foregroundColor(.white)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
+                        
+                    }
+                    .shadow(radius: 5)
+                    .onTapGesture {
+                        gameSettings.gameStarted = false
+                    }
+                
             }
         }
     }
@@ -125,6 +158,7 @@ struct BoardView: View {
     @StateObject var boardViewModel = BoardViewModel()
     @EnvironmentObject var gameViewModel: GameViewModel
     let letters = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    let numbers = 0..<8
     let boardSize: Double
     
     
@@ -156,9 +190,9 @@ struct BoardView: View {
                         }
                     }.frame(height: boardSize*0.8)
                     HStack(spacing:1) {
-                        ForEach((0..<8), id:\.self) { x in
+                        ForEach((numbers), id:\.self) { x in
                             VStack(spacing:1) {
-                                ForEach((0..<8).reversed(), id:\.self) { y in
+                                ForEach((numbers).reversed(), id:\.self) { y in
                                     TileView(tile: boardViewModel.board[y][x], tileSize: boardSize * 0.106, action: {self.tileAction(x: x, y: y)})
                                 }
                             }
@@ -241,6 +275,7 @@ struct TileView: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-        GameView(whitePlayer: "A", blackPlayer: "B")
+        GameView()
+            .environmentObject(GameSettings())
     }
 }

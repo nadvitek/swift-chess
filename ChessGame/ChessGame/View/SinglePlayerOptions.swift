@@ -7,45 +7,33 @@
 
 import SwiftUI
 
-struct SinglePlayerOptions: View {
-    @EnvironmentObject var gameSettings: GameSettings
+struct ColoredToggleStyle: ToggleStyle {
+    var label = ""
+    var onColor = Color(UIColor.green)
+    var offColor = Color(UIColor.systemGray5)
+    var thumbColor = Color.white
     
-    var body: some View {
-        ZStack {
-            Color.bg.ignoresSafeArea()
-            
-            VStack (spacing: 20) {
-                RoundedRectangle(cornerRadius: 40)
-                    .frame(width: 200, height: 120)
-                    .foregroundColor(.button)
-                    .overlay {
-                        Text("vs AI")
-                            .font(.getFont(of: 35))
-                            .foregroundColor(.black)
-                    }
-                    .onTapGesture {
-                        gameSettings.gameType = .Bot
-                    }
-                
-                RoundedRectangle(cornerRadius: 40)
-                    .frame(width: 200, height: 120)
-                    .foregroundColor(.button)
-                    .overlay {
-                        Text("Local Device")
-                            .font(.getFont(of: 35))
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.black)
-                    }
-                    .onTapGesture {
-                        gameSettings.gameType = .Offline
-                    }
+    func makeBody(configuration: Self.Configuration) -> some View {
+        HStack {
+            Text(label)
+                .font(.getFont(of: 20))
+                .foregroundColor(.black)
+            Spacer()
+            Button(action: { configuration.isOn.toggle() } )
+            {
+                RoundedRectangle(cornerRadius: 16, style: .circular)
+                    .fill(configuration.isOn ? onColor : offColor)
+                    .frame(width: 50, height: 29)
+                    .overlay(
+                        Circle()
+                            .fill(thumbColor)
+                            .shadow(radius: 1, x: 0, y: 1)
+                            .padding(1.5)
+                            .offset(x: configuration.isOn ? 10 : -10))
+                    .animation(Animation.easeInOut(duration: 0.1))
             }
         }
-    }
-}
-
-struct SinglePlayerOptions_Previews: PreviewProvider {
-    static var previews: some View {
-        SinglePlayerOptions()
+        .font(.title)
+        .padding(.horizontal)
     }
 }
