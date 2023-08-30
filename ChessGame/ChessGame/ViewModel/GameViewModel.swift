@@ -10,22 +10,37 @@ import Dispatch
 
 class GameViewModel: ObservableObject {
     @Published var playersTurn: Alliance = .White
-    @Published var gameOver = false
+    @Published var gameOver = false {
+        didSet {
+            if gameOver {
+                showGameOver = true
+                invalidateClocks()
+            }
+        }
+    }
     @Published var whiteTime: Double = 1200
     @Published var blackTime: Double = 1200
+    @Published var drawOffered = false
     var whiteClock: Timer?
     var blackClock: Timer?
+    @Published var letters = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    @Published var numbers = [0, 1, 2, 3, 4, 5, 6, 7]
+    @Published var isReversed = false
+    @Published var showGameOver = false
     
     init() {
         startWhiteClock()
     }
     
-    func nextTurn() {
+    func nextTurn(shouldReverse: Bool) {
         playersTurn = playersTurn.switchAlliance
         if (playersTurn == .White) {
             startWhiteClock()
         } else {
             startBlackClock()
+        }
+        if (shouldReverse) {
+            reverse()
         }
     }
     
@@ -75,5 +90,11 @@ class GameViewModel: ObservableObject {
         whiteClock = nil
         blackClock?.invalidate()
         blackClock = nil
+    }
+    
+    func reverse() {
+        letters = letters.reversed()
+        numbers = numbers.reversed()
+        isReversed.toggle()
     }
 }

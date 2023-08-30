@@ -22,6 +22,7 @@
 		A38BDBD02A1BA9E200E62583 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38BDBCF2A1BA9E200E62583 /* GameView.swift */; };
 		A38D87602A1E853500C41E9A /* BoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38D875F2A1E853500C41E9A /* BoardViewModel.swift */; };
 		A38D87622A1F9BDC00C41E9A /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38D87612A1F9BDC00C41E9A /* TileView.swift */; };
+		A39278F02A9FC4E3000CC0D6 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39278EF2A9FC4E3000CC0D6 /* BoardView.swift */; };
 		A39F4B552A89227D0084CC3E /* ViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39F4B542A89227D0084CC3E /* ViewProperties.swift */; };
 		A39F4B582A892E790084CC3E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A39F4B572A892E790084CC3E /* FirebaseAuth */; };
 		A39F4B5A2A892E790084CC3E /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = A39F4B592A892E790084CC3E /* FirebaseDatabase */; };
@@ -59,6 +60,7 @@
 		A38BDBCF2A1BA9E200E62583 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		A38D875F2A1E853500C41E9A /* BoardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewModel.swift; sourceTree = "<group>"; };
 		A38D87612A1F9BDC00C41E9A /* TileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileView.swift; sourceTree = "<group>"; };
+		A39278EF2A9FC4E3000CC0D6 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		A39F4B542A89227D0084CC3E /* ViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewProperties.swift; sourceTree = "<group>"; };
 		A39F4B5D2A892FBF0084CC3E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A3AF98372A0ED57000CE3FB2 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				A39F4B542A89227D0084CC3E /* ViewProperties.swift */,
 				A31179162A967D03007F4F18 /* HistoryItemView.swift */,
 				A3D0647B2A9A9EB000F6A379 /* SinglePlayerOptions.swift */,
+				A39278EF2A9FC4E3000CC0D6 /* BoardView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				A3D301022A21EFE600882F48 /* PromotionView.swift in Sources */,
 				A3D301042A2220E300882F48 /* GameViewModel.swift in Sources */,
 				A31179172A967D03007F4F18 /* HistoryItemView.swift in Sources */,
+				A39278F02A9FC4E3000CC0D6 /* BoardView.swift in Sources */,
 				A3AF98382A0ED57000CE3FB2 /* SignInView.swift in Sources */,
 				A3EFFF322A0EEA42006487E2 /* ButtonView.swift in Sources */,
 				A36799C52A0BBA3200F56B46 /* Alliance.swift in Sources */,

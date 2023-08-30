@@ -88,10 +88,6 @@ class MoveFilter {
         return false
     }
     
-    func checkAppeared() -> Bool {
-        return false
-    }
-    
     func copyBoard(board: [[Tile]]) -> [[Tile]] {
         var newBoard: [[Tile]] = []
         for y in 0..<8 {

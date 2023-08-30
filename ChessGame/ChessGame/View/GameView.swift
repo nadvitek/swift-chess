@@ -24,33 +24,68 @@ struct GameView: View {
             ZStack {
                 VStack() {
                     HStack {
-                        Text(gameSettings.blackPlayerName)
+                        Text(gameViewModel.isReversed ?
+                             gameSettings.whitePlayerName : gameSettings.blackPlayerName)
                             .font(.getFont(of: 30))
                         Spacer()
-                        Text(gameViewModel.showBlackTime())
+                        Text(gameViewModel.isReversed ?
+                             gameViewModel.showWhiteTime() : gameViewModel.showBlackTime())
                             .font(.getFont(of: 30))
                     }.padding()
                     
-                    OptionsButtonView(size: geo.size.width * 0.15, alliance: Alliance.Black)
                     
                     
-                    BoardView(size: geo.size.width * 0.9)
-                        .environmentObject(gameViewModel)
+                    
+                    ZStack {
+                        BoardView(size: geo.size.width * 0.9)
+                            .environmentObject(gameViewModel)
+                            .environmentObject(gameSettings)
+                            .onAppear {
+                                setRightView()
+                            }
+                        OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .White : .Black)
+                            .environmentObject(gameViewModel)
+                        OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .Black : .White)
+                            .environmentObject(gameViewModel)
+                    }
                     
                     
-                    OptionsButtonView(size: geo.size.width * 0.15, alliance: Alliance.White)
+                    
                     
                     HStack {
-                        Text(gameViewModel.showWhiteTime())
+                        Text(gameViewModel.isReversed ?
+                             gameViewModel.showBlackTime() : gameViewModel.showWhiteTime())
                             .font(.getFont(of: 30))
                         Spacer()
-                        Text(gameSettings.whitePlayerName)
+                        Text(gameViewModel.isReversed ?  gameSettings.blackPlayerName : gameSettings.whitePlayerName)
                             .font(.getFont(of: 30))
                     }.padding()
-                    
-                }
-                if(gameViewModel.gameOver) {
+                }.disabled(gameViewModel.gameOver)
+                .blur(radius: gameViewModel.showGameOver ? 7 : 0)
+                if(gameViewModel.showGameOver) {
                     gameOverView
+                }
+                if(gameViewModel.drawOffered) {
+                    drawOfferedView
+                }
+                if (gameViewModel.gameOver) {
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundColor(.button)
+                        .frame(width: 150, height: 50)
+                        .overlay {
+                            Text("Return to Main Menu")
+                                .foregroundColor(.black.opacity(0.8))
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .multilineTextAlignment(.center)
+                            
+                        }
+                        .shadow(radius: 5)
+                        .onTapGesture {
+                            gameSettings.gameStarted = false
+                        }
+                        .offset(x: -100, y: 220)
+                        .blur(radius: gameViewModel.showGameOver ? 7 : 0)
                 }
             }
         }
@@ -59,12 +94,61 @@ struct GameView: View {
     var gameOverView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15)
+                .frame(width: 340, height: 210)
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 330, height: 200)
+                .foregroundColor(.button)
+            VStack (spacing: 70) {
+                Text("\(gameViewModel.playersTurn.switchAlliance.description) Player Wins!")
+                    .foregroundColor(.black)
+                    .font(.getFont(of: 25))
+                
+                HStack {
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundColor(.black)
+                        .frame(width: 150, height: 50)
+                        .overlay {
+                            Text("Show Board")
+                                .foregroundColor(.white)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .multilineTextAlignment(.center)
+                            
+                        }
+                        .shadow(radius: 5)
+                        .onTapGesture {
+                            gameViewModel.showGameOver = false
+                    }
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundColor(.black)
+                        .frame(width: 150, height: 50)
+                        .overlay {
+                            Text("Return to Main Menu")
+                                .foregroundColor(.white)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .multilineTextAlignment(.center)
+                            
+                        }
+                        .shadow(radius: 5)
+                        .onTapGesture {
+                            gameSettings.gameStarted = false
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    var drawOfferedView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
                 .frame(width: 260, height: 210)
             RoundedRectangle(cornerRadius: 10)
                 .frame(width: 250, height: 200)
                 .foregroundColor(.button)
             VStack (spacing: 70) {
-                Text("\(gameViewModel.playersTurn.switchAlliance.description) Player Wins!")
+                Text("Draw is not implemnted yet.")
                     .foregroundColor(.black)
                     .font(.getFont(of: 25))
                 
@@ -72,7 +156,7 @@ struct GameView: View {
                     .foregroundColor(.black)
                     .frame(width: 150, height: 50)
                     .overlay {
-                        Text("Return to Main Menu")
+                        Text("Ok")
                             .foregroundColor(.white)
                             .font(.title3)
                             .fontWeight(.bold)
@@ -81,197 +165,19 @@ struct GameView: View {
                     }
                     .shadow(radius: 5)
                     .onTapGesture {
-                        gameSettings.gameStarted = false
+                        gameViewModel.drawOffered = false
                     }
                 
             }
         }
     }
-}
-
-struct OptionsButtonView: View {
-    @State var isSpread: Bool = false
-    @State var iconsShowed: Bool = false
-    let size: Double
-    let alliance: Alliance
     
-    
-    var body: some View {
-        ZStack() {
-            RoundedRectangle(cornerRadius: 100)
-                .foregroundColor(Color("boardColor"))
-                .frame(width: isSpread ? size * 6 : size, height: size)
-            if (iconsShowed) {
-                Image(systemName: "flag.fill")
-                    .resizable()
-                    .frame(width: size/2, height: size/2)
-                    .foregroundColor(Color.white)
-                    .rotationEffect(.degrees(alliance == .White ? 180 : 0))
-                    .offset(x: -135)
-                
-                Image(systemName: "flag.2.crossed.fill")
-                    .resizable()
-                    .frame(width: size/1.3, height: size/2)
-                    .foregroundColor(Color.brown)
-                    .rotationEffect(.degrees(alliance == .White ? 180 : 0))
-                    .offset(x: -30)
-                
-                Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
-                    .resizable()
-                    .frame(width: size/1.7, height: size/1.7)
-                    .foregroundColor(Color.gray)
-                    .rotationEffect(.degrees(alliance == .White ? 180 : 0))
-                    .offset(x: 70)
-            }
-            
-            Image(systemName: "chevron.backward")
-                .resizable()
-                .frame(width: size/3, height: size/2)
-                .rotationEffect(.degrees(isSpread ? 0 : 180))
-                .foregroundColor(Color("buttonColor"))
-                .offset(x: isSpread ? size * 2.5 : 3)
-                .onTapGesture {
-                    withAnimation(.spring(response: 1.2, dampingFraction: 0.9, blendDuration: 0.7)) {
-                        isSpread.toggle()
-                    }
-                    
-                    if (!isSpread) {
-                        iconsShowed.toggle()
-                    } else {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.65) {
-                            withAnimation(.spring()) {
-                                iconsShowed.toggle()
-                            }
-                        }
-                    }
-                    
-                }
-        }.position(x: isSpread ? size * 2.5 : 0)
-            .padding(50)
-            .offset(y: alliance == Alliance.White ? -40 : -40)
-            .rotationEffect(.degrees(alliance == .White ? 180 : 0))
-    }
-}
-
-
-struct BoardView: View {
-    @StateObject var boardViewModel = BoardViewModel()
-    @EnvironmentObject var gameViewModel: GameViewModel
-    let letters = ["A", "B", "C", "D", "E", "F", "G", "H"]
-    let numbers = 0..<8
-    let boardSize: Double
-    
-    
-    init(size: Double) {
-        self.boardSize = size
-    }
-    
-    var body: some View {
-        ZStack {
-            
-            Rectangle()
-                .frame(width: boardSize + 1, height: boardSize + 1)
-                .foregroundColor(Color("boardFrameColor"))
-            
-            Rectangle()
-                .frame(width: boardSize, height: boardSize)
-                .foregroundColor(Color("boardColor"))
-            
-            
-            
-            
-            VStack(spacing:2) {
-                HStack(spacing:5) {
-                    VStack(spacing: boardSize/19) {
-                        ForEach(0..<8) { i in
-                            Text(String(8 - i))
-                                .font(.headline)
-                                .foregroundColor(.white)
-                        }
-                    }.frame(height: boardSize*0.8)
-                    HStack(spacing:1) {
-                        ForEach((numbers), id:\.self) { x in
-                            VStack(spacing:1) {
-                                ForEach((numbers).reversed(), id:\.self) { y in
-                                    TileView(tile: boardViewModel.board[y][x], tileSize: boardSize * 0.106, action: {self.tileAction(x: x, y: y)})
-                                }
-                            }
-                        }
-                    }
-                }.offset(x:-7)
-                HStack(spacing: boardSize/13) {
-                    ForEach(0..<8) { i in
-                        Text(letters[i])
-                            .font(.headline)
-                            .foregroundColor(.white)
-                    }
-                    
-                }
-            }.offset(y:10)
-            
-            if (boardViewModel.processingPromotion) {
-                PromotionView(size: boardSize, piece: boardViewModel.promotedPiece!, action: {finishPromotion()})
-                    .offset(y: boardSize * (boardViewModel.promotedPiece?.alliance == .White ? 0.62 : -0.62))
-            }
-            
-            
-        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        
-    }
-    
-    func finishPromotion() {
-        boardViewModel.promotedPiece = nil
-    }
-    
-    func tileAction(x: Int, y: Int) {
-        let moveExecuted = boardViewModel.processTile(x: x, y: y, onTurn: gameViewModel.playersTurn)
-        if moveExecuted {
-            gameViewModel.nextTurn()
-        }
-        gameViewModel.gameOver = boardViewModel.gameOver
-    }
-}
-
-struct TileView: View {
-    @ObservedObject var tile: Tile
-    let tileSize: Double
-    let action: () -> Void
-    
-    var body: some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(decideTileColor())
-                .frame(width: tileSize, height: tileSize)
-            if let pieceOnTile = tile.piece {
-                Image(pieceOnTile.pieceImageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: tileSize, height: tileSize, alignment: .center)
-            }
-            
-            Circle()
-                .foregroundColor(.green)
-                .frame(width: tile.isTargetTile && tile.isEmpty ? tileSize * 0.6 : 0, height: tile.isTargetTile && tile.isEmpty ? tileSize * 0.6 : 0)
-        }
-        .onTapGesture {
-            withAnimation(.spring()) {
-                action()
-            }
+    func setRightView() {
+        if gameSettings.gameType == .Bot && gameSettings.playersAlliance == .Black{
+            gameViewModel.reverse()
         }
     }
-    
-    
-    func decideTileColor() -> Color {
-        if (tile.isTargetTile) {
-            if (!tile.isEmpty) {
-                return Color.red
-            }
-        }
-        
-        return Color((tile.x + tile.y) % 2 == 0 ? "darkTileColor" : "lightTileColor")
-    }
 }
-
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {

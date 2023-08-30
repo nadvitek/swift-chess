@@ -8,12 +8,13 @@
 import SwiftUI
 import Firebase
 
-
 let matches = [Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), opponent: "Firecracker", alliance: .White, state: .Win),
                Game(id: "2", date: Date(timeIntervalSince1970: 1692812600), opponent: "Miken", alliance: .White, state: .Lose),
                Game(id: "3", date: Date(timeIntervalSince1970: 1692812769), opponent: "Aham", alliance: .Black, state: .Win),
                Game(id: "4", date: Date(timeIntervalSince1970: 1692811969), opponent: "Firecracker", alliance: .Black, state: .Draw),
                Game(id: "5", date: Date(timeIntervalSince1970: 1692812369), opponent: "Ter", alliance: .White, state: .Lose)]
+
+//MARK: - This struct is kinda a mess, no time for refactoring, sorry.
 
 struct MainMenuView: View {
     @State var nickname = ""
@@ -69,7 +70,7 @@ struct MainMenuView: View {
                                 setNicknameView = true
                             }
                     }.padding()
-                        .disabled(setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected)
+                        .disabled(setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected || infoViewShown)
                     HStack {
                         RoundedRectangle(cornerRadius: 50)
                                 .foregroundColor(.button)
@@ -108,7 +109,7 @@ struct MainMenuView: View {
                                 customBoardSelected = true
                             }
                     }.disabled(setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected)
-                    Text("Match History")
+                    Text("Match History (Preview)")
                         .font(.getFont(of: 30))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
@@ -124,7 +125,7 @@ struct MainMenuView: View {
                         })
                     }
                 }.padding(.all, 3)
-                    .blur(radius: (setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected) ? 7 : 0)
+                    .blur(radius: (setNicknameView || multiPlayerSelected || singlePlayerSelected || customBoardSelected || infoViewShown) ? 7 : 0)
                 if (setNicknameView) {
                     setNickNameView.offset(y: 30)
                 }
@@ -353,6 +354,7 @@ struct MainMenuView: View {
     }
     
     func playGame() {
+        singlePlayerSelected = false
         gameSettings.playersAlliance = blackPlayerChosen ? .Black : .White
         if (aiChosen) {
             gameSettings.gameType = .Bot

@@ -25,42 +25,26 @@ struct PromotionView: View {
             HStack(spacing: 15) {
                 let tile = piece!.tile
                 
-                Button {
-                    tile.piece = Piece(on: tile, being: .Queen, ofColor: piece!.alliance)
-                    action()
-                } label: {
-                    Image("queen\(piece!.alliance.description)")
-                        .resizable()
-                        .frame(width: size * 0.17, height: size * 0.17)
-                }
+                createPieceButton(tile: tile, pieceType: .Queen)
                 
-                Button {
-                    tile.piece = Piece(on: tile, being: .Rook, ofColor: piece!.alliance)
-                    action()
-                } label: {
-                    Image("rook\(piece!.alliance.description)")
-                        .resizable()
-                        .frame(width: size * 0.17, height: size * 0.17)
-                }
+                createPieceButton(tile: tile, pieceType: .Rook)
                 
-                Button {
-                    tile.piece = Piece(on: tile, being: .Bishop, ofColor: piece!.alliance)
-                    action()
-                } label: {
-                    Image("bishop\(piece!.alliance.description)")
-                        .resizable()
-                        .frame(width: size * 0.17, height: size * 0.17)
-                }
+                createPieceButton(tile: tile, pieceType: .Bishop)
                 
-                Button {
-                    tile.piece = Piece(on: tile, being: .Knight, ofColor: piece!.alliance)
-                    action()
-                } label: {
-                    Image("knight\(piece!.alliance.description)")
-                        .resizable()
-                        .frame(width: size * 0.17, height: size * 0.17)
-                }
+                createPieceButton(tile: tile, pieceType: .Knight)
+                
             }
+        }
+    }
+    
+    func createPieceButton(tile: Tile, pieceType: PieceType) -> Button<some View> {
+        Button {
+            tile.piece = Piece(on: tile, being: pieceType, ofColor: piece!.alliance)
+            action()
+        } label: {
+            Image("\(pieceType.description)\(piece!.alliance.description)")
+                .resizable()
+                .frame(width: size * 0.17, height: size * 0.17)
         }
     }
 }
