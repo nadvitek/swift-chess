@@ -168,19 +168,15 @@
 		A36799D12A0BBDB700F56B46 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				A39278F12A9FE5C0000CC0D6 /* ChessViews */,
 				A3F161A32A7E7FED00DC59B1 /* SplashScreen */,
 				A36799B72A0BB9AF00F56B46 /* MainMenuView.swift */,
 				A3AF98372A0ED57000CE3FB2 /* SignInView.swift */,
 				A3EFFF312A0EEA42006487E2 /* ButtonView.swift */,
-				A38BDBCF2A1BA9E200E62583 /* GameView.swift */,
-				A38D87612A1F9BDC00C41E9A /* TileView.swift */,
-				A3D301012A21EFE600882F48 /* PromotionView.swift */,
-				A3FF2FC22A25EC8A00644AC0 /* OptionsButtonView.swift */,
 				A3DA83702A877D1B003EF2EB /* LogInView.swift */,
 				A39F4B542A89227D0084CC3E /* ViewProperties.swift */,
 				A31179162A967D03007F4F18 /* HistoryItemView.swift */,
 				A3D0647B2A9A9EB000F6A379 /* SinglePlayerOptions.swift */,
-				A39278EF2A9FC4E3000CC0D6 /* BoardView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -194,6 +190,18 @@
 				A3D0647D2A9AA34000F6A379 /* GameSettings.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A39278F12A9FE5C0000CC0D6 /* ChessViews */ = {
+			isa = PBXGroup;
+			children = (
+				A39278EF2A9FC4E3000CC0D6 /* BoardView.swift */,
+				A3FF2FC22A25EC8A00644AC0 /* OptionsButtonView.swift */,
+				A3D301012A21EFE600882F48 /* PromotionView.swift */,
+				A38D87612A1F9BDC00C41E9A /* TileView.swift */,
+				A38BDBCF2A1BA9E200E62583 /* GameView.swift */,
+			);
+			path = ChessViews;
 			sourceTree = "<group>";
 		};
 		A3EFFF2C2A0EE660006487E2 /* Font */ = {

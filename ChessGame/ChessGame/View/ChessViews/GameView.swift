@@ -43,10 +43,15 @@ struct GameView: View {
                             .onAppear {
                                 setRightView()
                             }
-                        OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .White : .Black)
-                            .environmentObject(gameViewModel)
-                        OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .Black : .White)
-                            .environmentObject(gameViewModel)
+                        if (gameSettings.showActionButton(alliance: .Black)) {
+                            OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .White : .Black)
+                                .environmentObject(gameViewModel)
+                        }
+                        if (gameSettings.showActionButton(alliance: .White)) {
+                            OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .Black : .White)
+                                .environmentObject(gameViewModel)
+                        }
+                        
                     }
                     
                     

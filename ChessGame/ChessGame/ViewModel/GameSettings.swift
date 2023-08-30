@@ -15,6 +15,20 @@ class GameSettings: ObservableObject {
     var gameType: GameType = .None
     var playersAlliance: Alliance = .White
     
+    
+    func isBotOnTurn(alliance: Alliance) -> Bool {
+        return gameType == .Bot && playersAlliance != alliance
+    }
+    
+    func showActionButton(alliance: Alliance) -> Bool {
+        if gameType == .Bot {
+            if (playersAlliance != alliance) {
+                return false
+            }
+            return true
+        }
+        return true
+    }
 }
 
 enum GameType {

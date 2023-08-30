@@ -60,6 +60,9 @@ struct BoardView: View {
                     
                 }
             }.offset(y:10)
+                .onAppear {
+                    playBot()
+                }
             
             if (boardViewModel.processingPromotion) {
                 PromotionView(size: boardSize, piece: boardViewModel.promotedPiece!, action: {finishPromotion()})
@@ -87,8 +90,22 @@ struct BoardView: View {
         let moveExecuted = boardViewModel.processTile(x: x, y: y, onTurn: gameViewModel.playersTurn)
         if moveExecuted {
             gameViewModel.nextTurn(shouldReverse:gameSettings.gameType == .Offline)
+            playBot()
+            
         }
         gameViewModel.gameOver = boardViewModel.gameOver
+    }
+    
+    func playBot() {
+        if (gameSettings.isBotOnTurn(alliance: gameViewModel.playersTurn) && !gameViewModel.gameOver) {
+            guard !boardViewModel.getOnTurnPlayersMoves().isEmpty else {
+                gameViewModel.gameOver = true
+                return
+            }
+            let move = boardViewModel.getOnTurnPlayersMoves().randomElement()
+            tileAction(x: move!.sourceTile.x, y: move!.sourceTile.y)
+            tileAction(x: move!.destinationTile.x, y: move!.destinationTile.y)
+        }
     }
 }
 
