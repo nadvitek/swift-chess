@@ -9,7 +9,7 @@ It should demonstrate my skills in fields like:
 <li>Basic UI Concepts</li>
 </ul>
 
-## For Previews use model of iPhone 14 Pro
+<h3><b>For Previews use model of iPhone 14 Pro.</b></h3>
 
 List of requirements:
 <ul>
