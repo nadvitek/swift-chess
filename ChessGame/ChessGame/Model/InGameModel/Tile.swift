@@ -8,9 +8,9 @@
 import Foundation
 
 class Tile: NSObject, ObservableObject, NSCopying {
+    @Published var piece: Piece?
     let x: Int
     let y: Int
-    @Published var piece: Piece?
     var isEmpty: Bool {
         get {
             piece == nil

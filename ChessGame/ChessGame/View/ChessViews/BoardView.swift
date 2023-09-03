@@ -70,7 +70,7 @@ struct BoardView: View {
             }
             
             
-        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        }.frame(alignment: .center)
         
     }
     

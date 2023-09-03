@@ -9,6 +9,13 @@ import SwiftUI
 import Firebase
 import _AuthenticationServices_SwiftUI
 
+/// This struct takes care of User registration or logging in process
+/// It works with the Firebase Database
+///
+/// > Warning: The Sign in with Apple doesn't react, because I haven't
+/// > signed up in the Apple Developer program yet. The Sign in with
+/// > Google is not implemented too.
+
 struct LogInView: View {
     @State var email: String = ""
     @State var password: String = ""
@@ -23,7 +30,7 @@ struct LogInView: View {
     
     var body: some View {
         if completionSuccesful {
-            MainMenuView(email: email, newAccount: !logInView)
+            MainMenuView(newAcc: !logInView, email: email)
         } else {
             loginView
         }
@@ -148,7 +155,6 @@ struct LogInView: View {
                 errorMessage = error!.localizedDescription
                 errorOccurred = true
             }
-            
             withAnimation(.easeIn(duration: 2.0)){
                 completionSuccesful = true
             }
@@ -175,14 +181,4 @@ struct LogInView_Previews: PreviewProvider {
     }
 }
 
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content) -> some View {
-            ZStack(alignment: alignment) {
-                placeholder().opacity(shouldShow ? 1 : 0)
-                self
-            }
-    }
-}
+

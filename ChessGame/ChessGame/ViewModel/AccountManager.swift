@@ -7,35 +7,41 @@
 
 import Foundation
 import Firebase
+import OSLog
 
-
+/// Manager for getting data from database of current user
 class AccountManager: ObservableObject {
     @Published var account: Account = Account(email: "", nickname: "")
     @Published var matchHistory: [Game] = []
+    let logger = Logger(subsystem: "com.nademvit.ChessGameTests", category: "AccountManager")
     
     let db = Firestore.firestore()
     
     func saveAccountNickname() {
-        let accounts = db.collection("accounta")
-        let myAccount = accounts.whereField("email", isEqualTo: account.email)
-        myAccount.setValue(account.nickname, forKey: "nickname")
+        let accounts = db.collection("accounts")
+        _ = accounts.whereField("email", isEqualTo: account.email)
+        
+        //myAccount.setValue(account.nickname, forKey: "nickname")
     }
     
     func addAccount() {
-        let accounts = db.collection("accounta")
+        let accounts = db.collection("accounts")
         accounts.addDocument(data: account.dataFormat)
+        
+        logger.info("Account added to the database.")
     }
     
     func fetchData() {
         findAccount()
         findMatchHistory()
+        logger.info("Fetching data completed.")
     }
     
     func findAccount() {
         let accounts = db.collection("accounts")
         accounts.getDocuments { snapshot, error in
-            guard error == nil else {
-                print(error!.localizedDescription)
+            guard let _  = error else {
+                self.logger.error("Getting accounts from database failed")
                 return
             }
             
@@ -53,6 +59,8 @@ class AccountManager: ObservableObject {
                     
                     self.account.nickname = name
                     self.account.id = id
+                    self.logger.info("Account found.")
+                    
                     return
                 }
             }
@@ -66,7 +74,7 @@ class AccountManager: ObservableObject {
                 
         whiteGames.getDocuments { snapshot, error in
             guard error == nil else {
-                print(error!.localizedDescription)
+                self.logger.error("Getting match history where user was white player from database failed.")
                 return
             }
             
@@ -93,12 +101,13 @@ class AccountManager: ObservableObject {
                     
                     self.matchHistory.append(Game(id: id, date: date, opponent: blackPlayer, alliance: .White, state: gameState))
                 }
+                self.logger.info("Match history where the user was white player loaded.")
             }
         }
         
         blackGames.getDocuments { snapshot, error in
             guard error == nil else {
-                print(error!.localizedDescription)
+                self.logger.error("Getting match history where user was black player from database failed.")
                 return
             }
             
@@ -125,6 +134,7 @@ class AccountManager: ObservableObject {
                     
                     self.matchHistory.append(Game(id: id, date: date, opponent: whitePlayer, alliance: .Black, state: gameState))
                 }
+                self.logger.info("Match history where the user was black player loaded.")
             }
         }
     }

@@ -17,11 +17,10 @@ struct GameView: View {
     
     var gameView: some View {
         GeometryReader { geo in
-                Rectangle()
-                    .fill()
-                    .ignoresSafeArea()
-                    .foregroundColor(Color("backgroundColor"))
             ZStack {
+                Color.bg
+                    .ignoresSafeArea()
+            
                 VStack() {
                     HStack {
                         Text(gameViewModel.isReversed ?
@@ -41,7 +40,7 @@ struct GameView: View {
                             .environmentObject(gameViewModel)
                             .environmentObject(gameSettings)
                             .onAppear {
-                                setRightView()
+                                setUpView()
                             }
                         if (gameSettings.showActionButton(alliance: .Black)) {
                             OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .White : .Black)
@@ -67,6 +66,7 @@ struct GameView: View {
                     }.padding()
                 }.disabled(gameViewModel.gameOver)
                 .blur(radius: gameViewModel.showGameOver ? 7 : 0)
+                .padding(.vertical)
                 if(gameViewModel.showGameOver) {
                     gameOverView
                 }
@@ -152,10 +152,12 @@ struct GameView: View {
             RoundedRectangle(cornerRadius: 10)
                 .frame(width: 250, height: 200)
                 .foregroundColor(.button)
-            VStack (spacing: 70) {
+            VStack (spacing: 50) {
                 Text("Draw is not implemnted yet.")
                     .foregroundColor(.black)
                     .font(.getFont(of: 25))
+                    .frame(maxWidth: 230)
+                    .multilineTextAlignment(.center)
                 
                 RoundedRectangle(cornerRadius: 20)
                     .foregroundColor(.black)
@@ -177,7 +179,7 @@ struct GameView: View {
         }
     }
     
-    func setRightView() {
+    func setUpView() {
         if gameSettings.gameType == .Bot && gameSettings.playersAlliance == .Black{
             gameViewModel.reverse()
         }

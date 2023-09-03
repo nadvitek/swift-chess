@@ -88,6 +88,10 @@ class MoveFilter {
         return false
     }
     
+    /// This method creates a copy of board for
+    /// a potential move to be played to find out if the move
+    /// can be valid or not
+    
     func copyBoard(board: [[Tile]]) -> [[Tile]] {
         var newBoard: [[Tile]] = []
         for y in 0..<8 {
