@@ -22,7 +22,7 @@ struct BoardView: View {
         ZStack {
             
             Rectangle()
-                .frame(width: boardSize + 1, height: boardSize + 1)
+                .frame(width: boardSize + 2, height: boardSize + 2)
                 .foregroundColor(Color("boardFrameColor"))
             
             Rectangle()
