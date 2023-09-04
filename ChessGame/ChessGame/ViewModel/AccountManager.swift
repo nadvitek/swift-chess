@@ -18,17 +18,22 @@ class AccountManager: ObservableObject {
     let db = Firestore.firestore()
     
     func saveAccountNickname() {
-        let accounts = db.collection("accounts")
-        _ = accounts.whereField("email", isEqualTo: account.email)
-        
-        //myAccount.setValue(account.nickname, forKey: "nickname")
+        let account = db.collection("accounts").document(account.email)
+        account.setData(self.account.dataFormat)
     }
     
     func addAccount() {
-        let accounts = db.collection("accounts")
-        accounts.addDocument(data: account.dataFormat)
-        
-        logger.info("Account added to the database.")
+        let accounts = db.collection("accounts").document(account.email)
+        accounts.setData(account.dataFormat) { error in
+            if let error = error {
+                self.logger.error("Couldn't add an account to the database.")
+                print(error.localizedDescription)
+                return
+            }
+            
+            self.logger.info("Account added to the database.")
+        }
+        //accounts.addDocument(data: account.dataFormat)
     }
     
     func fetchData() {
@@ -40,8 +45,9 @@ class AccountManager: ObservableObject {
     func findAccount() {
         let accounts = db.collection("accounts")
         accounts.getDocuments { snapshot, error in
-            guard let _  = error else {
+            guard error == nil else {
                 self.logger.error("Getting accounts from database failed")
+                print(error!.localizedDescription)
                 return
             }
             

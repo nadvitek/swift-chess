@@ -11,6 +11,8 @@
 		A31179152A967C7A007F4F18 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31179142A967C79007F4F18 /* Game.swift */; };
 		A31179172A967D03007F4F18 /* HistoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31179162A967D03007F4F18 /* HistoryItemView.swift */; };
 		A3370E8B2A20D3C30040B7B1 /* MoveCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3370E8A2A20D3C30040B7B1 /* MoveCreator.swift */; };
+		A35934352AA65A7B00ABB5C3 /* SchemeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35934342AA65A7B00ABB5C3 /* SchemeModel.swift */; };
+		A35934372AA6616700ABB5C3 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35934362AA6616600ABB5C3 /* LoginViewModel.swift */; };
 		A36799B62A0BB9AF00F56B46 /* ChessGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36799B52A0BB9AF00F56B46 /* ChessGameApp.swift */; };
 		A36799B82A0BB9AF00F56B46 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36799B72A0BB9AF00F56B46 /* MainMenuView.swift */; };
 		A36799BA2A0BB9B400F56B46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A36799B92A0BB9B400F56B46 /* Assets.xcassets */; };
@@ -59,6 +61,8 @@
 		A31179142A967C79007F4F18 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		A31179162A967D03007F4F18 /* HistoryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryItemView.swift; sourceTree = "<group>"; };
 		A3370E8A2A20D3C30040B7B1 /* MoveCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveCreator.swift; sourceTree = "<group>"; };
+		A35934342AA65A7B00ABB5C3 /* SchemeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemeModel.swift; sourceTree = "<group>"; };
+		A35934362AA6616600ABB5C3 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		A36799B22A0BB9AF00F56B46 /* ChessGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChessGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A36799B52A0BB9AF00F56B46 /* ChessGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessGameApp.swift; sourceTree = "<group>"; };
 		A36799B72A0BB9AF00F56B46 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -170,6 +174,7 @@
 				A3A96E392AA38D7100107A43 /* InGameModel */,
 				A31179142A967C79007F4F18 /* Game.swift */,
 				A3DAD6ED2A97E97300A3B0F2 /* Account.swift */,
+				A35934342AA65A7B00ABB5C3 /* SchemeModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -194,6 +199,7 @@
 				A3D064792A9A6BBF00F6A379 /* AccountManager.swift */,
 				A3D0647D2A9AA34000F6A379 /* GameSettings.swift */,
 				A3E9C1962AA4D7FF00B27C74 /* MainMenuAnimator.swift */,
+				A35934362AA6616600ABB5C3 /* LoginViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -368,6 +374,7 @@
 				A3D301042A2220E300882F48 /* GameViewModel.swift in Sources */,
 				A31179172A967D03007F4F18 /* HistoryItemView.swift in Sources */,
 				A39278F02A9FC4E3000CC0D6 /* BoardView.swift in Sources */,
+				A35934372AA6616700ABB5C3 /* LoginViewModel.swift in Sources */,
 				A3EFFF322A0EEA42006487E2 /* ButtonView.swift in Sources */,
 				A36799C52A0BBA3200F56B46 /* Alliance.swift in Sources */,
 				A3DAD6EE2A97E97300A3B0F2 /* Account.swift in Sources */,
@@ -382,6 +389,7 @@
 				A36799C72A0BBA4C00F56B46 /* PieceType.swift in Sources */,
 				A39F4B552A89227D0084CC3E /* ViewProperties.swift in Sources */,
 				A31179152A967C7A007F4F18 /* Game.swift in Sources */,
+				A35934352AA65A7B00ABB5C3 /* SchemeModel.swift in Sources */,
 				A3E9C1972AA4D7FF00B27C74 /* MainMenuAnimator.swift in Sources */,
 				A36799B62A0BB9AF00F56B46 /* ChessGameApp.swift in Sources */,
 				A38D87622A1F9BDC00C41E9A /* TileView.swift in Sources */,

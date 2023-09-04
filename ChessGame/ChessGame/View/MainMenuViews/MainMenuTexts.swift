@@ -15,4 +15,5 @@ struct MainMenuTexts {
     static let gameParametersHeadline = "Game Parameters"
     static let infoHeadline = "This application was developed by Vít Nademlejnský as a part of his portfolio and a demonstration of his skills."
     static let textFieldName = "Your Name"
+    static let playerOptions = "Player Options"
 }

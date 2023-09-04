@@ -44,8 +44,6 @@ struct ColoredToggleStyle: ToggleStyle {
                 .font(.getFont(of: 20))
                 .foregroundColor(.black)
             Spacer()
-            Button(action: { configuration.isOn.toggle() } )
-            {
                 RoundedRectangle(cornerRadius: 16, style: .circular)
                     .fill(configuration.isOn ? onColor : offColor)
                     .frame(width: 50, height: 29)
@@ -55,8 +53,11 @@ struct ColoredToggleStyle: ToggleStyle {
                             .shadow(radius: 1, x: 0, y: 1)
                             .padding(1.5)
                             .offset(x: configuration.isOn ? 10 : -10))
-                    .animation(Animation.easeInOut(duration: 0.1))
-            }
+                    .onTapGesture {
+                        withAnimation(Animation.easeInOut(duration: 0.1)) {
+                            configuration.isOn.toggle()
+                        }
+                    }
         }
         .font(.title)
         .padding(.horizontal)

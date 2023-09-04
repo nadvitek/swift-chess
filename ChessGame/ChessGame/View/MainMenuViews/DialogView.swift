@@ -17,11 +17,12 @@ struct DialogView: View {
     let secondaryButtonFunc: (() -> Void)
     let textFieldText: String
     let toggle: Bool
+    let colorSchemeChange: Bool
     
     @EnvironmentObject var animator: MainMenuAnimator
     @EnvironmentObject var accountManager: AccountManager
     
-    init(height: CGFloat, spacing: CGFloat, headline: String, primaryButtonText: String, primaryButtonFunc: @escaping () -> Void, secondaryButtonText: String = "", secondaryButtonFunc: @escaping () -> Void = {}, textFieldText: String = "", toggle: Bool = false) {
+    init(height: CGFloat, spacing: CGFloat, headline: String, primaryButtonText: String, primaryButtonFunc: @escaping () -> Void, secondaryButtonText: String = "", secondaryButtonFunc: @escaping () -> Void = {}, textFieldText: String = "", toggle: Bool = false, colorSchemeChange: Bool = false) {
         self.height = height
         self.spacing = spacing
         self.headline = headline
@@ -31,6 +32,7 @@ struct DialogView: View {
         self.secondaryButtonFunc = secondaryButtonFunc
         self.textFieldText = textFieldText
         self.toggle = toggle
+        self.colorSchemeChange = colorSchemeChange
     }
     
     var body: some View {
@@ -61,46 +63,59 @@ struct DialogView: View {
                             .frame(width: 200, height: 1)
                     }
                 }
-                if toggle {
-                    VStack {
-                        Text("Your Color:")
-                            .font(.getFont(of: 20))
-                            .foregroundColor(.black)
-                        Toggle("", isOn: $animator.blackPlayerChosen).frame(maxWidth: 150)
-                            .toggleStyle(ColoredToggleStyle(label: animator.blackPlayerChosen ? "Black" : "White", onColor: .black, offColor: .white, thumbColor: animator.blackPlayerChosen ? .white : .black))
-                        Toggle("", isOn: $animator.aiChosen).frame(maxWidth: 150)
-                            .toggleStyle(ColoredToggleStyle(label: animator.aiChosen ? "vs AI" : "Local", onColor: .black, offColor: .white, thumbColor: animator.aiChosen ? .white : .black))
-                        
-                    }.frame(maxWidth: 230)
-                }
-                HStack {
-                    if !secondaryButtonText.isEmpty {
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(.black)
-                            .frame(width: 100, height: 50)
-                            .overlay {
-                                Text(secondaryButtonText)
-                                    .foregroundColor(.white)
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                            }
-                            .shadow(radius: 5)
-                            .onTapGesture(perform: secondaryButtonFunc)
+                toggles
+                buttons
+            }
+        }
+    }
+    
+    var buttons: some View {
+        HStack {
+            if !secondaryButtonText.isEmpty {
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.black)
+                    .frame(width: 100, height: 50)
+                    .overlay {
+                        Text(secondaryButtonText)
+                            .foregroundColor(.white)
+                            .font(.title3)
+                            .fontWeight(.bold)
                     }
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(.black)
-                            .frame(width: secondaryButtonText.isEmpty ? 150 : 100, height: 50)
-                            .overlay {
-                                Text(primaryButtonText)
-                                    .foregroundColor(.white)
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                
-                            }
-                            .shadow(radius: 5)
-                            .onTapGesture(perform: primaryButtonFunc)
-                }
-                
+                    .shadow(radius: 5)
+                    .onTapGesture(perform: secondaryButtonFunc)
+            }
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.black)
+                    .frame(width: secondaryButtonText.isEmpty ? 150 : 100, height: 50)
+                    .overlay {
+                        Text(primaryButtonText)
+                            .foregroundColor(.white)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
+                    }
+                    .shadow(radius: 5)
+                    .onTapGesture(perform: primaryButtonFunc)
+        }
+    }
+    
+    var toggles: some View {
+        ZStack {
+            if colorSchemeChange {
+                Toggle("", isOn: $animator.colorSchemeLight).frame(maxWidth: 150)
+                    .toggleStyle(ColoredToggleStyle(label: animator.colorSchemeLight ? "Light" : "Dark", onColor: .white, offColor: .black, thumbColor: animator.colorSchemeLight ? .black : .white))
+            }
+            if toggle {
+                VStack {
+                    Text("Your Color:")
+                        .font(.getFont(of: 20))
+                        .foregroundColor(.black)
+                    Toggle("", isOn: $animator.blackPlayerChosen).frame(maxWidth: 150)
+                        .toggleStyle(ColoredToggleStyle(label: animator.blackPlayerChosen ? "Black" : "White", onColor: .black, offColor: .white, thumbColor: animator.blackPlayerChosen ? .white : .black))
+                    Toggle("", isOn: $animator.aiChosen).frame(maxWidth: 150)
+                        .toggleStyle(ColoredToggleStyle(label: animator.aiChosen ? "vs AI" : "Local", onColor: .black, offColor: .white, thumbColor: animator.aiChosen ? .white : .black))
+                    
+                }.frame(maxWidth: 230)
             }
         }
     }

@@ -14,12 +14,14 @@ let matches = [Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), oppo
                Game(id: "4", date: Date(timeIntervalSince1970: 1692811969), opponent: "Firecracker", alliance: .Black, state: .Draw),
                Game(id: "5", date: Date(timeIntervalSince1970: 1692812369), opponent: "Ter", alliance: .White, state: .Lose)]
 
-//MARK: - This struct is kinda a mess, no time for refactoring, sorry.
-
 struct MainMenuView: View {
     @StateObject var accountManager = AccountManager()
     @StateObject var gameSettings = GameSettings()
     @StateObject var mainMenuAnimator = MainMenuAnimator()
+    
+    @EnvironmentObject var loginViewModel: LoginViewModel
+    
+    @Binding var colorSchemeLight: Bool
     
     let newAcc: Bool
     let email: String
@@ -28,9 +30,8 @@ struct MainMenuView: View {
         if (gameSettings.gameStarted) {
             GameView().environmentObject(gameSettings)
         } else {
-            mainMenu
+            mainMenu.preferredColorScheme(colorSchemeLight ? .light : .dark)
         }
-        
     }
     
     var mainMenu: some View {
@@ -53,7 +54,7 @@ struct MainMenuView: View {
                             .resizable()
                             .frame(width: 40, height: 40)
                             .onTapGesture {
-                                mainMenuAnimator.setNicknameView = true
+                                mainMenuAnimator.playerOptionsView = true
                             }
                     }.padding()
                         .disabled(mainMenuAnimator.bgDisabled())
@@ -90,7 +91,7 @@ struct MainMenuView: View {
                         .environmentObject(accountManager)
                 }
                 if (mainMenuAnimator.customBoardSelected) {
-                    DialogView(height: 210, spacing: 20, headline: MainMenuTexts.customBoardHeadline, primaryButtonText: "Ok", primaryButtonFunc: {mainMenuAnimator.customBoardSelected = false})
+                    DialogView(height: 210, spacing: 20, headline: MainMenuTexts.customBoardHeadline, primaryButtonText: "Ok", primaryButtonFunc: {mainMenuAnimator.customBoardSelected = false}).offset(y: 30)
                         .environmentObject(mainMenuAnimator)
                         .environmentObject(accountManager)
                 }
@@ -104,12 +105,19 @@ struct MainMenuView: View {
                         .environmentObject(mainMenuAnimator)
                         .environmentObject(accountManager)
                 }
+                if (mainMenuAnimator.playerOptionsView) {
+                    DialogView(height: 210, spacing: 20, headline: MainMenuTexts.playerOptions, primaryButtonText: "Log out", primaryButtonFunc: {loginViewModel.completionSuccesful = false}, secondaryButtonText: "Back", secondaryButtonFunc: {mainMenuAnimator.playerOptionsView = false}, colorSchemeChange: true).offset(y: 30)
+                        .environmentObject(mainMenuAnimator)
+                        .environmentObject(accountManager)
+                }
             }.onAppear {
                 setup()
             }
     }
     
     func setup() {
+        mainMenuAnimator.colorSchemeLight = colorSchemeLight
+        mainMenuAnimator.schemeFunc = changeColorScheme
         mainMenuAnimator.setNicknameView = newAcc
         accountManager.account.email = email
         if !newAcc {
@@ -148,10 +156,19 @@ struct MainMenuView: View {
         }
         gameSettings.gameStarted = true
     }
+    
+    func changeColorScheme() {
+        self.colorSchemeLight.toggle()
+    }
 }
 
 struct MainMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        MainMenuView(newAcc: true, email: "haga")
+        Group {
+            MainMenuView(colorSchemeLight: .constant(true), newAcc: false, email: "haga")
+                .environmentObject(LoginViewModel())
+            MainMenuView(colorSchemeLight: .constant(false), newAcc: true, email: "haga")
+                .environmentObject(LoginViewModel())
+        }
     }
 }

@@ -17,22 +17,21 @@ import _AuthenticationServices_SwiftUI
 /// > Google is not implemented too.
 
 struct LogInView: View {
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var errorOccurred = false
-    @State var logInView = false
+    @StateObject var loginViewModel = LoginViewModel()
     
-    @State var errorMessage: String = "Error occurred, please try again"
+    @State var colorSchemeLight = true
     
-    @State var completionSuccesful = false
-    
-    @Environment(\.colorScheme) var colorScheme
+    init() {
+        getColorScheme()
+    }
     
     var body: some View {
-        if completionSuccesful {
-            MainMenuView(newAcc: !logInView, email: email)
+        if loginViewModel.completionSuccesful {
+            MainMenuView(colorSchemeLight: $colorSchemeLight, newAcc: !loginViewModel.logInView, email: loginViewModel.email)
+                .preferredColorScheme(colorSchemeLight ? .light : .dark)
+                .environmentObject(loginViewModel)
         } else {
-            loginView
+            loginView.preferredColorScheme(colorSchemeLight ? .light : .dark)
         }
     }
     
@@ -44,13 +43,13 @@ struct LogInView: View {
                 VStack(spacing: 20) {
                     Text("CzechMate")
                         .font(.getFont(of: 50))
-                        .offset(y: logInView ? -170 : -100)
+                        .offset(y: loginViewModel.logInView ? -170 : -100)
                     
                     
                     
-                    TextField("Email", text: $email)
+                    TextField("Email", text: $loginViewModel.email)
                         .font(.getFont(of: 25))
-                        .placeholder(when: email.isEmpty) {
+                        .placeholder(when: loginViewModel.email.isEmpty) {
                             Text("Email")
                                 .font(.getFont(of: 25))
                                 .foregroundColor(.gray)
@@ -59,9 +58,9 @@ struct LogInView: View {
                     Rectangle()
                         .frame(width: 350, height: 1)
                     
-                    SecureField("Password", text: $password)
+                    SecureField("Password", text: $loginViewModel.password)
                         .font(.getFont(of: 25))
-                        .placeholder(when: password.isEmpty) {
+                        .placeholder(when: loginViewModel.password.isEmpty) {
                             Text("Password")
                                 .font(.getFont(of: 25))
                                 .foregroundColor(.gray)
@@ -70,7 +69,7 @@ struct LogInView: View {
                     Rectangle()
                         .frame(width: 350, height: 1)
                     
-                    if (!logInView) {
+                    if (!loginViewModel.logInView) {
                         
                         
                         SignInWithAppleButton { request in
@@ -81,7 +80,7 @@ struct LogInView: View {
                         .frame(maxWidth: .infinity, maxHeight: 50)
                         .fontWeight(.bold)
                         .cornerRadius(15)
-                        .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                        .signInWithAppleButtonStyle(colorSchemeLight ? .white : .black)
                         .shadow(radius: 5)
                         
                         
@@ -90,7 +89,7 @@ struct LogInView: View {
                         } label: {
                             RoundedRectangle(cornerRadius: 15)
                                 .frame(maxWidth: .infinity, maxHeight: 50)
-                                .foregroundColor(colorScheme == .light ? .black : .white)
+                                .foregroundColor(colorSchemeLight ? .black : .white)
                                 .overlay {
                                     HStack {
                                         Image("google")
@@ -98,7 +97,7 @@ struct LogInView: View {
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: 20)
                                         Text("Sign in with Google")
-                                            .foregroundColor(colorScheme == .light ? .white : .black)
+                                            .foregroundColor(colorSchemeLight ? .white : .black)
                                             .font(.system(size: 18))
                                             .fontWeight(.semibold)
                                     }
@@ -110,14 +109,14 @@ struct LogInView: View {
                     
                     
                     Button {
-                        logInView ? logIn() : signUp()
+                        loginViewModel.logInView ? logIn() : signUp()
                     } label: {
                         RoundedRectangle(cornerRadius: 20)
                             .foregroundColor(.text)
                             .frame(width: 200, height: 50)
                             .overlay {
-                                Text(logInView ? "Log in" : "Sign up")
-                                    .foregroundColor(colorScheme == .light ? .white : .black)
+                                Text(loginViewModel.logInView ? "Log in" : "Sign up")
+                                    .foregroundColor(colorSchemeLight ? .white : .black)
                                     .font(.title3)
                                     .fontWeight(.bold)
                                 
@@ -126,50 +125,66 @@ struct LogInView: View {
                             .offset(y: 40)
                     }
                     
-                    Text(logInView ? "Don't have an account? Sign up" : "Already have an account? Log in")
+                    Text(loginViewModel.logInView ? "Don't have an account? Sign up" : "Already have an account? Log in")
                         .foregroundColor(.text)
                         .font(.getFont(of: 18))
                         .offset(y: 100)
                         .onTapGesture {
                             withAnimation(.easeOut(duration: 0.1)) {
-                                logInView.toggle()
+                                loginViewModel.logInView.toggle()
                             }
                         }
                     
                     
                     
                 }.padding(.horizontal)
-                    .alert(isPresented: $errorOccurred) {
-                        Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK"), action: {
-                            errorOccurred = false
+                    .alert(isPresented: $loginViewModel.errorOccurred) {
+                        Alert(title: Text("Error"), message: Text(loginViewModel.errorMessage), dismissButton: .default(Text("OK"), action: {
+                            loginViewModel.errorOccurred = false
                         }))
                     }
             }
         }
     }
     
+    func getColorScheme() {
+        guard let data = UserDefaults.standard.data(forKey: "color_scheme") else {
+            print("Data were not loaded.")
+            return
+        }
+        
+        guard let decodedData = try? JSONDecoder().decode(SchemeModel.self, from: data) else {
+            print("Scheme wasn't decoded.")
+            return
+        }
+        
+        colorSchemeLight = decodedData.colorScheme == "light" ? true : false
+    }
+    
     
     func signUp() {
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+        Auth.auth().createUser(withEmail: loginViewModel.email, password: loginViewModel.password) { result, error in
             if error != nil {
-                errorMessage = error!.localizedDescription
-                errorOccurred = true
+                loginViewModel.errorMessage = error!.localizedDescription
+                loginViewModel.errorOccurred = true
+                return
             }
             withAnimation(.easeIn(duration: 2.0)){
-                completionSuccesful = true
+                loginViewModel.completionSuccesful = true
             }
         }
     }
     
     func logIn() {
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+        Auth.auth().signIn(withEmail: loginViewModel.email, password: loginViewModel.password) { result, error in
             if error != nil {
-                errorMessage = error!.localizedDescription
-                errorOccurred = true
+                loginViewModel.errorMessage = error!.localizedDescription
+                loginViewModel.errorOccurred = true
+                return
             }
             
             withAnimation(.easeIn(duration: 2.0)){
-                completionSuccesful = true
+                loginViewModel.completionSuccesful = true
             }
         }
     }
