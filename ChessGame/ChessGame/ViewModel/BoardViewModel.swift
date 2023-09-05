@@ -9,6 +9,8 @@ import Foundation
 
 @MainActor class BoardViewModel: ObservableObject {
     @Published var board: [[Tile]] = []
+    @Published var processingPromotion = false
+    
     var lastMove: Move?
     var markedTiles: [Tile] = []
     var showedMoves: [Move] = []
@@ -17,7 +19,7 @@ import Foundation
     let moveCreator: MoveCreator
     let moveFilter: MoveFilter
     var gameOver = false
-    @Published var processingPromotion = false
+    var gameResult: GameResult = .None
     var promotedPiece: Piece? {
         willSet(piece) {
             if (piece == nil) {
@@ -76,7 +78,7 @@ import Foundation
         }
         filterMoves()
         if getOnTurnPlayersMoves().isEmpty {
-            gameOver = true
+            decideResult()
         }
     }
     
@@ -151,7 +153,7 @@ import Foundation
     }
     
     func getMovesOfPiece(_ piece: Piece) -> [Move] {
-        var moves:[Move] = []
+        var moves: [Move] = []
         var setOfMoves: [Move]
         if piece.alliance == .White {
             setOfMoves = whiteMoves
@@ -177,6 +179,29 @@ import Foundation
         }
         
         showedMoves.append(contentsOf: moves)
+    }
+    
+    func decideResult() {
+        if let lastPlayedMove = lastMove {
+            if drawHappened(lastMove: lastPlayedMove) {
+                gameResult = .Draw
+            } else {
+                gameResult = lastPlayedMove.piece.alliance == .White ? .WhiteWin : .BlackWin
+            }
+        }
+        gameOver = true
+    }
+    
+    func drawHappened(lastMove: Move) -> Bool {
+        let moves = moveCreator.createMoves(for: board, of: lastMove.piece.alliance)
+        for move in moves {
+            if let attackedPiece = move.destinationTile.piece {
+                if attackedPiece.pieceType == .King {
+                    return false
+                }
+            }
+        }
+        return true
     }
 }
 

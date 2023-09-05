@@ -27,6 +27,7 @@ class GameViewModel: ObservableObject {
     @Published var numbers = [0, 1, 2, 3, 4, 5, 6, 7]
     @Published var isReversed = false
     @Published var showGameOver = false
+    @Published var allianceDrawOffered: Alliance = .White
     
     init() {
         startWhiteClock()

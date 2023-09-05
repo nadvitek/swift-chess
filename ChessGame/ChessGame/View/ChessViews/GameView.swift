@@ -45,12 +45,14 @@ struct GameView: View {
                         if (gameSettings.showActionButton(alliance: .Black)) {
                             OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .White : .Black)
                                 .environmentObject(gameViewModel)
+                                .environmentObject(gameSettings)
                         }
                         if (gameSettings.showActionButton(alliance: .White)) {
                             OptionsButtonView(size: geo.size.width * 0.15, alliance: gameViewModel.isReversed ? .Black : .White)
                                 .environmentObject(gameViewModel)
+                                .environmentObject(gameSettings)
                         }
-                        
+
                     }
                     
                     
@@ -64,14 +66,15 @@ struct GameView: View {
                         Text(gameViewModel.isReversed ?  gameSettings.blackPlayerName : gameSettings.whitePlayerName)
                             .font(.getFont(of: 30))
                     }.padding()
-                }.disabled(gameViewModel.gameOver)
+                }.disabled(gameViewModel.gameOver || gameViewModel.drawOffered)
                 .blur(radius: gameViewModel.showGameOver ? 7 : 0)
-                .padding(.vertical)
                 if(gameViewModel.showGameOver) {
                     gameOverView
                 }
                 if(gameViewModel.drawOffered) {
-                    drawOfferedView
+                    DrawOffer()
+                        .environmentObject(gameViewModel)
+                        .environmentObject(gameSettings)
                 }
                 if (gameViewModel.gameOver) {
                     RoundedRectangle(cornerRadius: 20)
@@ -104,7 +107,7 @@ struct GameView: View {
                 .frame(width: 330, height: 200)
                 .foregroundColor(.button)
             VStack (spacing: 70) {
-                Text("\(gameViewModel.playersTurn.switchAlliance.description) Player Wins!")
+                Text(gameSettings.gameResult.isResultClear() ? "\((gameSettings.gameResult == .WhiteWin ? "White" : "Black")) Player Wins!" : "It's a draw!")
                     .foregroundColor(.black)
                     .font(.getFont(of: 25))
                 
@@ -140,40 +143,6 @@ struct GameView: View {
                             gameSettings.gameStarted = false
                     }
                 }
-                
-            }
-        }
-    }
-    
-    var drawOfferedView: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 15)
-                .frame(width: 260, height: 210)
-            RoundedRectangle(cornerRadius: 10)
-                .frame(width: 250, height: 200)
-                .foregroundColor(.button)
-            VStack (spacing: 50) {
-                Text("Draw is not implemnted yet.")
-                    .foregroundColor(.black)
-                    .font(.getFont(of: 25))
-                    .frame(maxWidth: 230)
-                    .multilineTextAlignment(.center)
-                
-                RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(.black)
-                    .frame(width: 150, height: 50)
-                    .overlay {
-                        Text("Ok")
-                            .foregroundColor(.white)
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .multilineTextAlignment(.center)
-                        
-                    }
-                    .shadow(radius: 5)
-                    .onTapGesture {
-                        gameViewModel.drawOffered = false
-                    }
                 
             }
         }

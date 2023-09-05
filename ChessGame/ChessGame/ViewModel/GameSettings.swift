@@ -12,6 +12,8 @@ class GameSettings: ObservableObject {
     @Published var whitePlayerName = "Player White"
     @Published var blackPlayerName = "Player Black"
     
+    var gameResult: GameResult = .None
+    
     var gameType: GameType = .None
     var playersAlliance: Alliance = .White
     

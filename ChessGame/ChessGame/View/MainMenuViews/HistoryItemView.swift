@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let game = Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), opponent: "Firecracker", alliance: .White, state: .Win)
+let game = Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), whitePlayer: "Jennky", blackPlayer: "Firecracker", result: .WhiteWin)
 
 struct HistoryItemView: View {
     let game: Game
@@ -31,17 +31,17 @@ struct HistoryItemView: View {
                             .foregroundColor(.black)
                         
                         HStack (alignment: .center, spacing: 5) {
-                            Image("pawn\(game.alliance.rawValue)")
+                            Image("pawnWhite")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 50)
                                 .foregroundColor(.black)
-                            generateText("Jennky")
-                            generateText(game.state.rawValue)
+                            generateText(game.whitePlayer)
+                            generateText(game.result.getWhiteScore())
                             generateText(" : ")
-                            generateText(game.state.getOpposite().rawValue)
-                            generateText(game.opponent)
-                            Image("pawn\(game.alliance.switchAlliance.rawValue)")
+                            generateText(game.result.getBlackScore())
+                            generateText(game.blackPlayer)
+                            Image("pawnBlack")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 50)

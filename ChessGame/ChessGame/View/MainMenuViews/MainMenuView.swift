@@ -8,11 +8,11 @@
 import SwiftUI
 import Firebase
 
-let matches = [Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), opponent: "Firecracker", alliance: .White, state: .Win),
-               Game(id: "2", date: Date(timeIntervalSince1970: 1692812600), opponent: "Miken", alliance: .White, state: .Lose),
-               Game(id: "3", date: Date(timeIntervalSince1970: 1692812769), opponent: "Aham", alliance: .Black, state: .Win),
-               Game(id: "4", date: Date(timeIntervalSince1970: 1692811969), opponent: "Firecracker", alliance: .Black, state: .Draw),
-               Game(id: "5", date: Date(timeIntervalSince1970: 1692812369), opponent: "Ter", alliance: .White, state: .Lose)]
+let matches = [Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), whitePlayer: "Firecracker", blackPlayer: "Jennky", result: .WhiteWin),
+               Game(id: "2", date: Date(timeIntervalSince1970: 1692812600), whitePlayer: "Jennky", blackPlayer: "Miken", result: .BlackWin),
+               Game(id: "3", date: Date(timeIntervalSince1970: 1692812769), whitePlayer: "Jennky", blackPlayer: "Aham", result: .BlackWin),
+               Game(id: "4", date: Date(timeIntervalSince1970: 1692811969), whitePlayer: "Firecracker", blackPlayer: "Jennky", result: .Draw),
+               Game(id: "5", date: Date(timeIntervalSince1970: 1692812369), whitePlayer: "Jennky", blackPlayer: "Ter", result: .BlackWin)]
 
 struct MainMenuView: View {
     @StateObject var accountManager = AccountManager()
@@ -118,13 +118,20 @@ struct MainMenuView: View {
     func setup() {
         mainMenuAnimator.colorSchemeLight = colorSchemeLight
         mainMenuAnimator.schemeFunc = changeColorScheme
-        mainMenuAnimator.setNicknameView = newAcc
-        accountManager.account.email = email
-        if !newAcc {
-            accountManager.fetchData()
+        if (gameSettings.gameResult == .None) {
+            mainMenuAnimator.setNicknameView = newAcc
+            accountManager.account.email = email
+            if !newAcc {
+                accountManager.fetchData()
+            } else {
+                accountManager.addAccount()
+            }
         } else {
-            accountManager.addAccount()
+            accountManager.saveGame(settings: gameSettings)
+            
+            gameSettings.gameResult = .None
         }
+        
     }
     
     func didSetNickname() {
@@ -150,8 +157,10 @@ struct MainMenuView: View {
             gameSettings.gameType = .Offline
             if mainMenuAnimator.blackPlayerChosen {
                 gameSettings.blackPlayerName = accountManager.account.nickname
+                gameSettings.whitePlayerName = MainMenuTexts.defaultWhitePlayer
             } else {
                 gameSettings.whitePlayerName = accountManager.account.nickname
+                gameSettings.blackPlayerName = MainMenuTexts.defaultBlackPlayer
             }
         }
         gameSettings.gameStarted = true

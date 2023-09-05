@@ -91,14 +91,20 @@ struct BoardView: View {
         if moveExecuted {
             gameViewModel.nextTurn(shouldReverse:gameSettings.gameType == .Offline)
             playBot()
-            
         }
-        gameViewModel.gameOver = boardViewModel.gameOver
+        if boardViewModel.gameOver {
+            boardViewModel.decideResult()
+            gameSettings.gameResult = boardViewModel.gameResult
+            gameViewModel.gameOver = true
+        }
+        
     }
     
     func playBot() {
         if (gameSettings.isBotOnTurn(alliance: gameViewModel.playersTurn) && !gameViewModel.gameOver) {
             guard !boardViewModel.getOnTurnPlayersMoves().isEmpty else {
+                boardViewModel.decideResult()
+                gameSettings.gameResult = boardViewModel.gameResult
                 gameViewModel.gameOver = true
                 return
             }

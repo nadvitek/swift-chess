@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OptionsButtonView: View {
     @EnvironmentObject var gameViewModel: GameViewModel
+    @EnvironmentObject var gameSettings: GameSettings
     
     @State var isSpread: Bool = false
     @State var iconsShowed: Bool = false
@@ -40,7 +41,13 @@ struct OptionsButtonView: View {
                     .rotationEffect(.degrees(alliance == .White ? 180 : 0))
                     .offset(x: -30)
                     .onTapGesture {
-                        gameViewModel.drawOffered = true
+                        if gameSettings.gameType == .Bot {
+                            gameSettings.gameResult = .Draw
+                            gameViewModel.gameOver = true
+                        } else {
+                            gameViewModel.allianceDrawOffered = gameViewModel.isReversed ? alliance.switchAlliance : alliance
+                            gameViewModel.drawOffered = true
+                        }
                     }
                 
                 Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
@@ -83,7 +90,19 @@ struct OptionsButtonView: View {
     }
     
     func giveUp() {
-        gameViewModel.playersTurn = gameViewModel.isReversed ? alliance.switchAlliance : alliance
+        if (gameViewModel.isReversed) {
+            if alliance == .White {
+                gameSettings.gameResult = .WhiteWin
+            } else {
+                gameSettings.gameResult = .BlackWin
+            }
+        } else {
+            if alliance == .White {
+                gameSettings.gameResult = .BlackWin
+            } else {
+                gameSettings.gameResult = .WhiteWin
+            }
+        }
         gameViewModel.gameOver = true
     }
 }
@@ -92,6 +111,8 @@ struct OptionsView_Previews: PreviewProvider {
     static var previews: some View {
         GeometryReader { geo in
             OptionsButtonView(size: geo.size.width * 0.15, alliance: .White)
+                .environmentObject(GameViewModel())
+                .environmentObject(GameSettings())
         }
     }
 }

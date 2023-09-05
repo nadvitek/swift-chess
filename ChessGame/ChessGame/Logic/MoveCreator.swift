@@ -27,6 +27,22 @@ class MoveCreator {
         return moves
     }
     
+    func createMoves(for board: [[Tile]], of alliance: Alliance) -> [Move] {
+        self.board = board
+        var moves: [Move] = []
+        for row in board {
+            for tile in row {
+                if let pieceOnTile = tile.piece {
+                    guard pieceOnTile.alliance == alliance else {
+                        continue
+                    }
+                    moves.append(contentsOf: createMovesForPiece(pieceOnTile))
+                }
+            }
+        }
+        return moves
+    }
+    
     func createMovesForPiece(_ piece: Piece) -> [Move] {
         switch piece.pieceType {
         case .Pawn:

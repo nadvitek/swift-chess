@@ -33,7 +33,10 @@ class AccountManager: ObservableObject {
             
             self.logger.info("Account added to the database.")
         }
-        //accounts.addDocument(data: account.dataFormat)
+    }
+    
+    func saveGame(settings: GameSettings) {
+        
     }
     
     func fetchData() {
@@ -93,19 +96,19 @@ class AccountManager: ObservableObject {
                     let score = data["score"] as? Int ?? 1
                     let date = data["date"] as? Date ?? Date()
                     
-                    var gameState: GameState
+                    var result: GameResult
                     switch score {
                     case 1:
-                        gameState = .Win
+                        result = .WhiteWin
                     case 2:
-                        gameState = .Lose
+                        result = .BlackWin
                     case 3:
-                        gameState = .Draw
+                        result = .Draw
                     default:
-                        gameState = .Win
+                        result = .WhiteWin
                     }
                     
-                    self.matchHistory.append(Game(id: id, date: date, opponent: blackPlayer, alliance: .White, state: gameState))
+                    self.matchHistory.append(Game(id: id, date: date, whitePlayer: self.account.nickname, blackPlayer: blackPlayer, result: result))
                 }
                 self.logger.info("Match history where the user was white player loaded.")
             }
@@ -126,19 +129,19 @@ class AccountManager: ObservableObject {
                     let score = data["score"] as? Int ?? 1
                     let date = data["date"] as? Date ?? Date()
                     
-                    var gameState: GameState
+                    var result: GameResult
                     switch score {
                     case 1:
-                        gameState = .Lose
+                        result = .WhiteWin
                     case 2:
-                        gameState = .Win
+                        result = .BlackWin
                     case 3:
-                        gameState = .Draw
+                        result = .Draw
                     default:
-                        gameState = .Win
+                        result = .WhiteWin
                     }
                     
-                    self.matchHistory.append(Game(id: id, date: date, opponent: whitePlayer, alliance: .Black, state: gameState))
+                    self.matchHistory.append(Game(id: id, date: date, whitePlayer: whitePlayer, blackPlayer: self.account.nickname, result: result))
                 }
                 self.logger.info("Match history where the user was black player loaded.")
             }

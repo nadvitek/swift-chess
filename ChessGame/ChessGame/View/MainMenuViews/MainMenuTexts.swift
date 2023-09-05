@@ -16,4 +16,6 @@ struct MainMenuTexts {
     static let infoHeadline = "This application was developed by Vít Nademlejnský as a part of his portfolio and a demonstration of his skills."
     static let textFieldName = "Your Name"
     static let playerOptions = "Player Options"
+    static let defaultBlackPlayer = "Player Black"
+    static let defaultWhitePlayer = "Player White"
 }

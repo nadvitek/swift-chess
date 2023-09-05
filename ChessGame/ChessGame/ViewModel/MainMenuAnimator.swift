@@ -18,8 +18,10 @@ class MainMenuAnimator: ObservableObject {
     @Published var playerOptionsView = false
     
     @Published var colorSchemeLight: Bool {
-        didSet {
-            schemeFunc()
+        willSet {
+            if colorSchemeLight != newValue {
+                schemeFunc()
+            }
         }
     }
     
