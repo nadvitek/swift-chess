@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import OSLog
 
 let matches = [Game(id: "1", date: Date(timeIntervalSince1970: 1692812969), whitePlayer: "Firecracker", blackPlayer: "Jennky", result: .WhiteWin),
                Game(id: "2", date: Date(timeIntervalSince1970: 1692812600), whitePlayer: "Jennky", blackPlayer: "Miken", result: .BlackWin),
@@ -22,6 +23,8 @@ struct MainMenuView: View {
     @EnvironmentObject var loginViewModel: LoginViewModel
     
     @Binding var colorSchemeLight: Bool
+    
+    let logger = Logger(subsystem: "com.nademvit.ChessGame", category: "LogInView")
     
     let newAcc: Bool
     let email: String
@@ -76,7 +79,7 @@ struct MainMenuView: View {
                             ForEach(accountManager.matchHistory) { game in
                                 HistoryItemView(game: game)
                             }
-                        })
+                        }).ignoresSafeArea()
                     }
                 }.padding(.all, 3)
                     .blur(radius: (mainMenuAnimator.bgDisabled()) ? 7 : 0)
@@ -115,6 +118,16 @@ struct MainMenuView: View {
             }
     }
     
+    func saveColorScheme() {
+        let schemeModel = SchemeModel(colorScheme: colorSchemeLight ? "light" : "dark")
+        if let encodedData = try? JSONEncoder().encode(schemeModel) {
+            UserDefaults.standard.set(encodedData, forKey: "color_scheme")
+            logger.debug("New Color Scheme \(schemeModel.colorScheme) saved.")
+        } else {
+            logger.error("Data of SchemeModel couldn't be encoded.")
+        }
+    }
+    
     func setup() {
         mainMenuAnimator.colorSchemeLight = colorSchemeLight
         mainMenuAnimator.schemeFunc = changeColorScheme
@@ -124,11 +137,11 @@ struct MainMenuView: View {
             if !newAcc {
                 accountManager.fetchData()
             } else {
+                accountManager.account.nickname = ""
                 accountManager.addAccount()
             }
         } else {
             accountManager.saveGame(settings: gameSettings)
-            
             gameSettings.gameResult = .None
         }
         
@@ -168,6 +181,7 @@ struct MainMenuView: View {
     
     func changeColorScheme() {
         self.colorSchemeLight.toggle()
+        saveColorScheme()
     }
 }
 

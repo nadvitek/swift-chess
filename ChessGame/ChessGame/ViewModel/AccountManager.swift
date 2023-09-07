@@ -11,9 +11,9 @@ import OSLog
 
 /// Manager for getting data from database of current user
 class AccountManager: ObservableObject {
-    @Published var account: Account = Account(email: "", nickname: "")
+    @Published var account: Account = Account(email: "", nickname: "user")
     @Published var matchHistory: [Game] = []
-    let logger = Logger(subsystem: "com.nademvit.ChessGameTests", category: "AccountManager")
+    let logger = Logger(subsystem: "com.nademvit.ChessGame", category: "AccountManager")
     
     let db = Firestore.firestore()
     
@@ -36,12 +36,24 @@ class AccountManager: ObservableObject {
     }
     
     func saveGame(settings: GameSettings) {
-        
+        let game = Game(date: Date(), whitePlayer: settings.playersAlliance == .White ? account.email : settings.whitePlayerName, blackPlayer: settings.playersAlliance == .Black ? account.email : settings.blackPlayerName, result: settings.gameResult)
+        let gameId = game.id
+        let viewableGame = Game(id: gameId, date: Date(), whitePlayer: settings.playersAlliance == .White ? account.nickname : settings.whitePlayerName, blackPlayer: settings.playersAlliance == .Black ? account.nickname : settings.blackPlayerName, result: settings.gameResult)
+        self.matchHistory.append(viewableGame)
+        let gameData = db.collection("games").document(game.id)
+        gameData.setData(game.dataFormat) { error in
+            if let error = error {
+                self.logger.error("Couldn't add game to the database.")
+                print(error.localizedDescription)
+                return
+            }
+            
+            self.logger.info("Game added to the database.")
+        }
     }
     
     func fetchData() {
         findAccount()
-        findMatchHistory()
         logger.info("Fetching data completed.")
     }
     
@@ -70,8 +82,9 @@ class AccountManager: ObservableObject {
                     self.account.id = id
                     self.logger.info("Account found.")
                     
-                    return
+                    break
                 }
+                self.findMatchHistory()
             }
         }
     }
@@ -92,9 +105,9 @@ class AccountManager: ObservableObject {
                     let data = document.data()
                     
                     let id = data["id"] as? String ?? "1"
-                    let blackPlayer = data["blackPlayer"] as? String ?? "a"
-                    let score = data["score"] as? Int ?? 1
-                    let date = data["date"] as? Date ?? Date()
+                    let blackPlayer = data["blackPlayer"] as? String ?? "black"
+                    let score = data["result"] as? Int ?? 1
+                    let date = (data["date"] as? Timestamp)?.dateValue()
                     
                     var result: GameResult
                     switch score {
@@ -108,7 +121,7 @@ class AccountManager: ObservableObject {
                         result = .WhiteWin
                     }
                     
-                    self.matchHistory.append(Game(id: id, date: date, whitePlayer: self.account.nickname, blackPlayer: blackPlayer, result: result))
+                    self.matchHistory.append(Game(id: id, date: date!, whitePlayer: self.account.nickname, blackPlayer: blackPlayer, result: result))
                 }
                 self.logger.info("Match history where the user was white player loaded.")
             }
@@ -126,8 +139,8 @@ class AccountManager: ObservableObject {
                     
                     let id = data["id"] as? String ?? "1"
                     let whitePlayer = data["whitePlayer"] as? String ?? "a"
-                    let score = data["score"] as? Int ?? 1
-                    let date = data["date"] as? Date ?? Date()
+                    let score = data["result"] as? Int ?? 1
+                    let date = (data["date"] as? Timestamp)?.dateValue()
                     
                     var result: GameResult
                     switch score {
@@ -141,7 +154,7 @@ class AccountManager: ObservableObject {
                         result = .WhiteWin
                     }
                     
-                    self.matchHistory.append(Game(id: id, date: date, whitePlayer: whitePlayer, blackPlayer: self.account.nickname, result: result))
+                    self.matchHistory.append(Game(id: id, date: date!, whitePlayer: whitePlayer, blackPlayer: self.account.nickname, result: result))
                 }
                 self.logger.info("Match history where the user was black player loaded.")
             }

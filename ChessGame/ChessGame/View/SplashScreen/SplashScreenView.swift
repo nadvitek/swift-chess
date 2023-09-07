@@ -14,15 +14,18 @@ struct SplashScreenView: View {
     
     
     var body: some View {
+        if (thirdPhase) {
+            LogInView()
+        } else {
             ZStack {
                 Color("background")
                     .ignoresSafeArea()
-                splashScreen.opacity(secondPhase || thirdPhase ? 0 : 1.0)
+                splashScreen.opacity(secondPhase ? 0 : 1.0)
                 Color(.black).opacity(secondPhase ? 1.0 : 0)
                     .edgesIgnoringSafeArea(.all)
-                LogInView().opacity(thirdPhase ? 1.0 : 0)
-                    .edgesIgnoringSafeArea(.all)
             }
+        }
+            
     }
     
     var splashScreen: some View {

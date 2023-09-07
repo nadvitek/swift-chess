@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import _AuthenticationServices_SwiftUI
+import OSLog
 
 /// This struct takes care of User registration or logging in process
 /// It works with the Firebase Database
@@ -20,10 +21,7 @@ struct LogInView: View {
     @StateObject var loginViewModel = LoginViewModel()
     
     @State var colorSchemeLight = true
-    
-    init() {
-        getColorScheme()
-    }
+    let logger = Logger(subsystem: "com.nademvit.ChessGame", category: "LogInView")
     
     var body: some View {
         if loginViewModel.completionSuccesful {
@@ -32,6 +30,7 @@ struct LogInView: View {
                 .environmentObject(loginViewModel)
         } else {
             loginView.preferredColorScheme(colorSchemeLight ? .light : .dark)
+                .onAppear(perform: getColorScheme)
         }
     }
     
@@ -80,7 +79,7 @@ struct LogInView: View {
                         .frame(maxWidth: .infinity, maxHeight: 50)
                         .fontWeight(.bold)
                         .cornerRadius(15)
-                        .signInWithAppleButtonStyle(colorSchemeLight ? .white : .black)
+                        .signInWithAppleButtonStyle(colorSchemeLight ? .black : .white)
                         .shadow(radius: 5)
                         
                         
@@ -149,16 +148,28 @@ struct LogInView: View {
     
     func getColorScheme() {
         guard let data = UserDefaults.standard.data(forKey: "color_scheme") else {
-            print("Data were not loaded.")
+            logger.warning("Data were not loaded.")
+            saveColorScheme()
             return
         }
         
         guard let decodedData = try? JSONDecoder().decode(SchemeModel.self, from: data) else {
-            print("Scheme wasn't decoded.")
+            logger.error("Scheme couldn't be decoded.")
             return
         }
         
         colorSchemeLight = decodedData.colorScheme == "light" ? true : false
+        logger.info("ColorScheme is \(decodedData.colorScheme)")
+    }
+    
+    func saveColorScheme() {
+        let schemeModel = SchemeModel(colorScheme: colorSchemeLight ? "light" : "dark")
+        if let encodedData = try? JSONEncoder().encode(schemeModel) {
+            UserDefaults.standard.set(encodedData, forKey: "color_scheme")
+            logger.debug("New Color Scheme saved.")
+        } else {
+            logger.error("Data of SchemeModel couldn't be encoded.")
+        }
     }
     
     

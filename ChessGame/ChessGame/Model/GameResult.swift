@@ -8,10 +8,10 @@
 import Foundation
 
 enum GameResult: Int {
-    case None
-    case WhiteWin
-    case BlackWin
-    case Draw
+    case None = 0
+    case WhiteWin = 1
+    case BlackWin = 2
+    case Draw = 3
     
     
     func isResultClear() -> Bool {

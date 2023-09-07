@@ -84,6 +84,7 @@ struct BoardView: View {
     
     func finishPromotion() {
         boardViewModel.promotedPiece = nil
+        playBot()
     }
     
     func tileAction(x: Int, y: Int) {
@@ -101,7 +102,7 @@ struct BoardView: View {
     }
     
     func playBot() {
-        if (gameSettings.isBotOnTurn(alliance: gameViewModel.playersTurn) && !gameViewModel.gameOver) {
+        if (gameSettings.isBotOnTurn(alliance: gameViewModel.playersTurn) && !gameViewModel.gameOver  && !boardViewModel.processingPromotion) {
             guard !boardViewModel.getOnTurnPlayersMoves().isEmpty else {
                 boardViewModel.decideResult()
                 gameSettings.gameResult = boardViewModel.gameResult

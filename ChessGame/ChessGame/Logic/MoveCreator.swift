@@ -93,7 +93,6 @@ class MoveCreator {
         
         if let move = lastMove {
             if (move.piece.pieceType == .Pawn && move.isPawnTwoStepMove() && pawn.isNext(to: move.piece)) {
-                print("hii")
                 moves.append(Move(from: pawn.tile, to: board[pawnY + parameter][move.piece.tile.x], with: pawn))
             }
         }

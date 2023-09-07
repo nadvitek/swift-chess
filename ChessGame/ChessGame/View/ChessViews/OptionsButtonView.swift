@@ -16,8 +16,6 @@ struct OptionsButtonView: View {
     let size: Double
     let alliance: Alliance
     
-    
-    
     var body: some View {
         ZStack() {
             RoundedRectangle(cornerRadius: 100)
@@ -41,13 +39,7 @@ struct OptionsButtonView: View {
                     .rotationEffect(.degrees(alliance == .White ? 180 : 0))
                     .offset(x: -30)
                     .onTapGesture {
-                        if gameSettings.gameType == .Bot {
-                            gameSettings.gameResult = .Draw
-                            gameViewModel.gameOver = true
-                        } else {
-                            gameViewModel.allianceDrawOffered = gameViewModel.isReversed ? alliance.switchAlliance : alliance
-                            gameViewModel.drawOffered = true
-                        }
+                        offerDraw()
                     }
                 
                 Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
@@ -104,6 +96,16 @@ struct OptionsButtonView: View {
             }
         }
         gameViewModel.gameOver = true
+    }
+    
+    func offerDraw() {
+        if gameSettings.gameType == .Bot {
+            gameSettings.gameResult = .Draw
+            gameViewModel.gameOver = true
+        } else {
+            gameViewModel.allianceDrawOffered = gameViewModel.isReversed ? alliance.switchAlliance : alliance
+            gameViewModel.drawOffered = true
+        }
     }
 }
 

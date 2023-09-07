@@ -14,8 +14,8 @@ class GameSettings: ObservableObject {
     
     var gameResult: GameResult = .None
     
-    var gameType: GameType = .None
-    var playersAlliance: Alliance = .White
+    var gameType: GameType = .Offline
+    var playersAlliance: Alliance = .Black
     
     
     func isBotOnTurn(alliance: Alliance) -> Bool {
